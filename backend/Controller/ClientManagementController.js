@@ -9,6 +9,7 @@ cloudinary.config({
   api_secret: 'p12EKWICdyHWx8LcihuWYqIruWQ'
 });
 
+// hello i ma farhan rangrez aap kase hia sir npm i git 
 const ClientCreate = asyncHandler(async (req, res) => {
   const {
     clientName,
