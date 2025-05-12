@@ -2,8 +2,7 @@ const mongoose = require("mongoose");
 
 
 const ClientManagementSchema = new mongoose.Schema({
-  clientSupplier: { type: String, required: true },
-  name: { type: String, required: true },
+  clientName: { type: String, required: true },
   industry: { type: String, required: true },
   website: { type: String, required: true },
   clientAddress: { type: String, required: true },
@@ -28,11 +27,11 @@ const ClientManagementSchema = new mongoose.Schema({
     billingPhone: { type: String, required: true },
     currency: {
       type: String,
-      enum: ['USD', 'EUR', 'GBP']
+     required: true
     },
     preferredPaymentMethod: {
       type: String,
-      enum: ['Check', 'Credit Card', 'Bank Transfer']
+      required: true
     },
     _id:false
   }],
@@ -64,7 +63,7 @@ const ClientManagementSchema = new mongoose.Schema({
     accountCode: { type: String, required: true },
     accountType: {
       type: String,
-      enum: ['Accounts Receivable', 'Accounts Payable']
+     required: true 
     },
     openingBalance: { type: Number, required: true },
     balanceDate: { type: Date, required: true },

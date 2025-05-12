@@ -3,11 +3,11 @@ const mongoose = require("mongoose");
 const Projects = require("./ProjectsModel");
 
 const jobsSchema = new mongoose.Schema({
-    projectId: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Projects',
-        required: true,
-    },
+      projectId:[ {
+           type: mongoose.Schema.Types.ObjectId,
+           ref: 'Projects',
+           required: true,
+       }],
     brandName: {
         type:String ,
         required: true,
@@ -44,10 +44,10 @@ const jobsSchema = new mongoose.Schema({
         type: String,
         required: true
       },
-    totalTime: {
-        type: String,
-        require: true
-    }
+    // totalTime: {
+    //     type: String,
+    //     require: true
+    // }
 },{
     timestamps: true,
 });

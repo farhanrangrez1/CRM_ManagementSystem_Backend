@@ -11,8 +11,7 @@ cloudinary.config({
 
 const ClientCreate = asyncHandler(async (req, res) => {
   const {
-    clientSupplier,
-    name,
+    clientName,
     industry,
     website,
     clientAddress,
@@ -28,7 +27,7 @@ const ClientCreate = asyncHandler(async (req, res) => {
   } = req.body;
 
   // Input validation (basic check for required root-level fields)
-  if (!clientSupplier || !name || !industry || !website || !clientAddress || !TaxID_VATNumber || !CSRCode || !Status) {
+  if (!clientName || !industry || !website || !clientAddress || !TaxID_VATNumber || !CSRCode || !Status) {
     return res.status(400).json({
       success: false,
       message: "Please provide all required root-level fields"
@@ -37,8 +36,7 @@ const ClientCreate = asyncHandler(async (req, res) => {
 
   try {
     const newClient = new ClientManagement({
-      clientSupplier,
-      name,
+      clientName,
       industry,
       website,
       clientAddress,
@@ -109,8 +107,7 @@ const ClientCreate = asyncHandler(async (req, res) => {
   const UpdateClient = async (req, res) => {
     try {
       const allowedFields = [
-        'clientSupplier',
-        'name',
+        'clientName',
         'industry',
         'website',
         'clientAddress',

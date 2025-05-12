@@ -71,13 +71,13 @@ const ProjectsSchema = new mongoose.Schema({
     required: true,
   },
   currency: {
-    type:Number,
+    type:String,
     required: true,
   },
-  totalTime :{
-    type:String,
-    require:true
-  }
+  // totalTime :{
+  //   type:String,
+  //   require:true
+  // }
 }, {
   timestamps: true,
 });

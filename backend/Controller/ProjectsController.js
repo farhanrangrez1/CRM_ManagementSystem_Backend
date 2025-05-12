@@ -24,7 +24,7 @@ const createProjects = async (req, res) => {
     projectRequirements,
     budgetAmount,
     currency,
-    totalTime
+    // totalTime
   } = req.body;
 
   try {
@@ -40,7 +40,7 @@ const createProjects = async (req, res) => {
       projectRequirements,
       budgetAmount,
       currency,
-      totalTime
+      // totalTime
     });
     const savedAssignment = await newAssignment.save();
     res.status(201).json({

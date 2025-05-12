@@ -1,5 +1,5 @@
 const express=require('express');
-const { jobCreate, AllJob, deleteJob, UpdateJob, SingleJob } = require('../Controller/JobsController');
+const { jobCreate, AllJob, deleteJob, UpdateJob, SingleJob, UpdateJobAssign } = require('../Controller/JobsController');
 
 
 const router = express.Router()
@@ -10,8 +10,11 @@ router.get('/',AllJob)
 
 router.delete('/:id',deleteJob)
 
-router.patch('/:id',UpdateJob)
+router.patch('/',UpdateJob)
 
 router.get('/:id',SingleJob)
+
+router.put('/',UpdateJobAssign)
+
 
  module.exports = router 

@@ -9,9 +9,10 @@ cloudinary.config({
   api_key: '418838712271323',
   api_secret: 'p12EKWICdyHWx8LcihuWYqIruWQ'
 });
+
 const jobCreate = asyncHandler(async (req, res) => {
   const {
-    projectsId,
+    projectsId, // Multiple Project IDs
     brandName,
     subBrand,
     flavour,
@@ -20,28 +21,31 @@ const jobCreate = asyncHandler(async (req, res) => {
     priority,
     Status,
     assign,
-    totalTime,
+    // totalTime,
     barcode
   } = req.body;
 
   try {
-
-    if (!mongoose.Types.ObjectId.isValid(projectsId)) {
+    // Validate each projectId
+    if (!Array.isArray(projectsId) || projectsId.some(id => !mongoose.Types.ObjectId.isValid(id))) {
       return res.status(400).json({
         success: false,
-        message: "Invalid Project ID format"
+        message: "Invalid Project ID format. Ensure all IDs are valid."
       });
     }
 
-    const project = await Projects.findById(projectsId);
-    if (!project) {
+    // Check if all projects exist
+    const projects = await Projects.find({ '_id': { $in: projectsId } });
+    if (projects.length !== projectsId.length) {
       return res.status(404).json({
         success: false,
-        message: "Project not found"
+        message: "One or more projects not found"
       });
     }
+
+    // Create the new Job
     const newJob = new Jobs({
-      projectId: projectsId,
+      projectId: projectsId, // Multiple Project IDs
       brandName,
       subBrand,
       flavour,
@@ -50,12 +54,13 @@ const jobCreate = asyncHandler(async (req, res) => {
       priority,
       Status,
       assign,
-      totalTime,
+      // totalTime,
       barcode
     });
+
     await newJob.save();
     const jobData = newJob.toObject();
-    jobData.projectId = jobData.projectId;
+    jobData.projectId = jobData.projectId;  // Update projectId
     delete jobData.projects;
 
     res.status(201).json({
@@ -71,6 +76,8 @@ const jobCreate = asyncHandler(async (req, res) => {
     });
   }
 });
+
+
 
 //GET SINGLE AllProjects
 //METHOD:GET
@@ -88,15 +95,18 @@ const AllJob = async (req, res) => {
     }
 
     const jobsWithProjectDetails = allJobs.map(job => {
+      const jobObj = job.toObject();
       return {
-        ...job.toObject(),
-        project: {
-          projectId: job.projectId._id,
-          projectName: job.projectId.projectName, // Use the correct field name
-        }
+        ...jobObj,
+        project: job.projectId
+          ? {
+              projectId: job.projectId._id,
+              projectName: job.projectId.projectName,
+            }
+          : null,
       };
     });
-
+    
     res.status(200).json({
       success: true,
       jobs: jobsWithProjectDetails,
@@ -141,7 +151,7 @@ const UpdateJob = async (req, res) => {
       'priority',
       'Status',
       'assign',
-      'totalTime',
+      // 'totalTime',
     ];
     const updateData = {};
     allowedFields.forEach(field => {
@@ -154,7 +164,7 @@ const UpdateJob = async (req, res) => {
       return res.status(400).json({ message: 'At least one field must be provided for update' });
     }
     const updatedDiary = await Jobs.findByIdAndUpdate(
-      req.params.id,
+      req.body.id,
       updateData,
       { new: true }
     );
@@ -170,6 +180,57 @@ const UpdateJob = async (req, res) => {
 
 
 
+
+//GET SINGLE ProjectsUpdate
+//METHOD:PUT
+const UpdateJobAssign = async (req, res) => {
+  try {
+    const allowedFields = [
+      'projects',
+      'projectName',
+      'brandName',
+      'subBrand',
+      'flavour',
+      'packType',
+      'packSize',
+      'priority',
+      'Status',
+      'assign',
+      // 'totalTime',
+    ];
+
+    const updateData = {};
+    allowedFields.forEach(field => {
+      if (req.body[field] !== undefined) {
+        updateData[field] = req.body[field];
+      }
+    });
+
+    if (!Array.isArray(req.body.id) || req.body.id.length === 0) {
+      return res.status(400).json({ message: 'ID array is required and must not be empty' });
+    }
+
+    if (Object.keys(updateData).length === 0) {
+      return res.status(400).json({ message: 'At least one field must be provided for update' });
+    }
+
+    const updatedResult = await Jobs.updateMany(
+      { _id: { $in: req.body.id } }, 
+      { $set: updateData }       
+    );
+
+    res.status(200).json({
+      message: 'Jobs updated successfully',
+      matchedCount: updatedResult.matchedCount,
+      modifiedCount: updatedResult.modifiedCount
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Server error', error });
+  }
+};
+
+
 //METHOD:Single
 //TYPE:PUBLIC
 const SingleJob = async (req, res) => {
@@ -182,4 +243,4 @@ const SingleJob = async (req, res) => {
 }
 
 
-module.exports = { jobCreate, AllJob, deleteJob, UpdateJob, SingleJob };
+module.exports = { jobCreate, AllJob, deleteJob, UpdateJob, SingleJob,UpdateJobAssign };

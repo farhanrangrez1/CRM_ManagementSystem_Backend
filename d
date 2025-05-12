@@ -404,6 +404,67 @@ module.exports = {jobCreate,AllJob,deleteJob,UpdateJob,SingleJob};
 
 
 
+const mongoose = require("mongoose");
+
+const Projects = require("./ProjectsModel");
+
+const jobsSchema = new mongoose.Schema({
+    projectId:[ {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Projects',
+        required: true,
+    }],
+    brandName: {
+        type:String ,
+        required: true,
+    },
+    subBrand: {
+        type: String,
+        required: true,
+    },
+    flavour: {
+        type: String,
+        required: true,
+    },
+    packType: {
+        type: String,
+        required: true,
+    },
+    packSize: {
+        type: String,
+        required: true,
+    },
+    priority:{
+        type: String,
+        required: true,
+    },
+    Status: {
+        type: String,
+        required: true,
+    },
+    assign: {
+        type: String,
+        required: true,
+    },
+    barcode: {
+        type: String,
+        required: true
+      },
+    totalTime: {
+        type: String,
+        require: true
+    }
+},{
+    timestamps: true,
+});
+
+module.exports = mongoose.model('Jobs', jobsSchema);
+
+
+
+
+
+
 
 
 
@@ -456,4 +517,24 @@ module.exports = {jobCreate,AllJob,deleteJob,UpdateJob,SingleJob};
       });
     }
   };
+  
+
+
+
+  {
+    "projectsId": [
+      "681c8656d90e15caa3863398", 
+      "681c8662d90e15caa386339a"
+    ],
+    "brandName": "Pepsi",
+    "subBrand": "Pepsi Max",
+    "flavour": "Cherry",
+    "packType": "Can",
+    "packSize": "330ml",
+    "priority": "Low",
+    "Status": "In Progress",
+    "assign": "Designer",
+    "barcode": "POS-123456",
+    "totalTime": "05:30"
+  }
   
