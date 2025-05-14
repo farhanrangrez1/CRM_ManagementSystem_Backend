@@ -538,3 +538,112 @@ module.exports = mongoose.model('Jobs', jobsSchema);
     "totalTime": "05:30"
   }
   
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  // //////////////
+  
+// ///////////////////
+
+
+const userRegister=asynchandler(
+async(req,res)=>{
+    const {name,email,phone,address,city,password}=req.body
+
+    if(!name || !email || !phone || !address || !city || !password ){
+        throw new Error("Pliss Fill All Detilse")
+    }
+     if(phone.length > 10){
+        res.status(401)
+        throw new Error('Please number is 10 digit')    
+     }
+    // user Exist 
+     const userExist = await User.findOne({email:email})
+
+    if(userExist){
+    res.status(401)
+    throw new Error("User Already Exist")
+    }
+
+     const salt = await bcrypt.genSalt(10)
+     const hashpassword =await bcrypt.hash(password,salt)
+
+    //  creat 
+    const user = await User.create({
+        name,
+        email,
+        phone,
+        address,
+        city,
+        password:hashpassword,
+    })
+    if(user){
+        res.status(201).json({
+            _id:user._id,
+            name:user.name,
+            email:user.email,
+            phone:user.phone,
+            address:user.address,
+            city:user.city,
+            password:user.password,
+            token:genretToken(user._id)
+
+        })
+    } 
+ 
+    res.send("Register Router")
+})
+
+const userlogin=asynchandler(
+async(req,res)=>{
+    const {email,password}=req.body
+    if(!email || !password){
+        throw new Error("Pliss Fill All Detilse")
+    }
+
+    //  user Exist 
+    const  user =await User.findOne({email})
+
+    if(user && (await bcrypt.compare(password,user.password))){
+     res.status(200).json({
+        _id:user._id,
+        email:user.email,
+        password:user.password,
+        isAdmin : user?.isAdmin,
+        token:genretToken(user._id),
+        
+
+     })
+    }else{
+        res.status(401)
+        throw new Error("Invalid Cordetion")
+    }
+
+    res.send("Login Router")
+})
+
+
+
+module.exports = {userRegister,userlogin,getMe}

@@ -8,7 +8,8 @@ routerapi.use('/api/projects', require('./Router/ProjectsRouter'));
 routerapi.use('/api/jobs', require('./Router/JobsRouter'));
 // Client
 routerapi.use('/api/client', require('./Router/ClientManagementRouter'));
-
+// User
+routerapi.use('/api/user', require('./Router/userRouter'));
 
 
 module.exports = routerapi
