@@ -10,6 +10,7 @@ routerapi.use('/api/jobs', require('./Router/JobsRouter'));
 routerapi.use('/api/client', require('./Router/ClientManagementRouter'));
 // User
 routerapi.use('/api/user', require('./Router/userRouter'));
-
+// CostEstimates
+routerapi.use('/api/costEstimates', require('./Router/CostEstimatesRouter'));
 
 module.exports = routerapi

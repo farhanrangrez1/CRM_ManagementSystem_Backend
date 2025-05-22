@@ -18,7 +18,7 @@ const genretToken = (id) => {
 };
 
 // Register user
-exports.createUser = async (req, res) => {
+const createUser = async (req, res) => {
     try {
         const {
             firstName, lastName, email, password, passwordConfirm,
@@ -81,7 +81,7 @@ exports.createUser = async (req, res) => {
 };
 
 // Login
-exports.loginUser = async (req, res) => {
+const loginUser = async (req, res) => {
     try {
         const { email, password } = req.body;
 
@@ -115,7 +115,7 @@ exports.loginUser = async (req, res) => {
 };
 
 // Forgot password
-exports.forgotPassword = async (req, res) => {
+const forgotPassword = async (req, res) => {
     try {
         const { email } = req.body;
         const user = await User.findOne({ email });
@@ -165,7 +165,7 @@ exports.forgotPassword = async (req, res) => {
 };
 
 // Reset password
-exports.resetPassword = async (req, res) => {
+const resetPassword = async (req, res) => {
   try {
     const { email, password } = req.body;
     if (!email || !password) {
@@ -191,7 +191,7 @@ exports.resetPassword = async (req, res) => {
 };
 
 // Get all users
-exports.getAllUsers = async (req, res) => {
+const getAllUsers = async (req, res) => {
     try {
         const users = await User.find();
         res.status(200).json({
@@ -203,3 +203,59 @@ exports.getAllUsers = async (req, res) => {
         res.status(400).json({ status: 'fail', message: err.message });
     }
 };
+
+
+       //GET SINGLE DeleteUser
+  //METHOD:DELETE
+  const deleteUser = async (req, res) => {
+    let deleteUserID = req.params.id
+    if (deleteUser) {
+      const deleteUser = await User.findByIdAndDelete(deleteUserID, req.body);
+      res.status(200).json("Delete Checklists Successfully")
+    } else {
+      res.status(400).json({ message: "Not Delete User" })
+    }
+  }
+
+  //GET SINGLE UserUpdate
+    //METHOD:PUT
+    const UpdateUser = async (req, res) => {
+      try {
+        const allowedFields = [
+           'firstName',
+            'lastName',
+            'email',
+            'phone',
+            'role',
+            'state',
+            'country',
+            'profileImage',
+            'permissions',
+            'accessLevel'
+        ];
+        const updateData = {};
+        allowedFields.forEach(field => {
+          if (req.body[field] !== undefined) {
+            updateData[field] = req.body[field];
+          }
+        });
+        if (Object.keys(updateData).length === 0) {
+          return res.status(400).json({ message: 'At least one field must be provided for update' });
+        }
+        const updatedDiary = await User.findByIdAndUpdate(
+          req.params.id,
+          updateData,
+          { new: true }
+        );
+        if (!updatedDiary) {
+          return res.status(404).json({ message: 'Diary not found' });
+        }
+        res.status(200).json(updatedDiary);
+      } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: 'Server error', error });
+      }
+    };
+  
+
+    module.exports = {createUser ,loginUser,forgotPassword,resetPassword,getAllUsers,deleteUser,UpdateUser}
