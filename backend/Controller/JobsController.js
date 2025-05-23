@@ -12,7 +12,7 @@ cloudinary.config({
 
 const jobCreate = asyncHandler(async (req, res) => {
   const {
-    projectsId, // Multiple Project IDs
+    projectsId, 
     brandName,
     subBrand,
     flavour,
@@ -33,7 +33,6 @@ const jobCreate = asyncHandler(async (req, res) => {
         message: "Invalid Project ID format. Ensure all IDs are valid."
       });
     }
-
     // Check if all projects exist
     const projects = await Projects.find({ '_id': { $in: projectsId } });
     if (projects.length !== projectsId.length) {
@@ -42,10 +41,9 @@ const jobCreate = asyncHandler(async (req, res) => {
         message: "One or more projects not found"
       });
     }
-
     // Create the new Job
     const newJob = new Jobs({
-      projectId: projectsId, // Multiple Project IDs
+      projectId: projectsId, 
       brandName,
       subBrand,
       flavour,
@@ -60,7 +58,7 @@ const jobCreate = asyncHandler(async (req, res) => {
 
     await newJob.save();
     const jobData = newJob.toObject();
-    jobData.projectId = jobData.projectId;  // Update projectId
+    jobData.projectId = jobData.projectId; 
     delete jobData.projects;
 
     res.status(201).json({
@@ -81,35 +79,36 @@ const jobCreate = asyncHandler(async (req, res) => {
 
 //GET SINGLE AllProjects
 //METHOD:GET
+// GET All Jobs with project and client info
+// GET All Jobs with project and client info
 const AllJob = async (req, res) => {
   try {
-    const allJobs = await Jobs.find()
-      .populate({
-        path: 'projectId',
-        select: '_id projectName',
-        model: 'Projects'
-      });
+    const allJobs = await Jobs.find().populate({
+      path: 'projectId', // ✅ Corrected from "projectsId"
+      select: '_id projectName',
+      model: 'Projects'
+    });
 
     if (!allJobs || allJobs.length === 0) {
       return res.status(404).json({ success: false, message: "No jobs found" });
     }
 
-    const jobsWithProjectDetails = allJobs.map(job => {
+    const jobsWithDetails = allJobs.map(job => {
       const jobObj = job.toObject();
       return {
         ...jobObj,
-        project: job.projectId
-          ? {
-              projectId: job.projectId._id,
-              projectName: job.projectId.projectName,
-            }
-          : null,
+        projects: Array.isArray(job.projectId)
+          ? job.projectId.map(project => ({
+              projectId: project?._id,
+              projectName: project?.projectName
+            }))
+          : []
       };
     });
-    
+
     res.status(200).json({
       success: true,
-      jobs: jobsWithProjectDetails,
+      jobs: jobsWithDetails,
     });
 
   } catch (error) {
@@ -121,6 +120,8 @@ const AllJob = async (req, res) => {
     });
   }
 };
+
+
 
 
 //GET SINGLE DeleteProjects

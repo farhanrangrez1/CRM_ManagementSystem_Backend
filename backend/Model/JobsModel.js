@@ -3,17 +3,17 @@ const mongoose = require("mongoose");
 const Projects = require("./ProjectsModel");
 
 const jobsSchema = new mongoose.Schema({
-      projectId:[ {
-           type: mongoose.Schema.Types.ObjectId,
-           ref: 'Projects',
-           required: true,
-       }],
+    projectId: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Projects',
+        required: true,
+    }],
     brandName: {
-        type:String ,
+        type: String,
         required: true,
     },
     subBrand: {
-        
+
         type: String,
         required: true,
     },
@@ -29,7 +29,7 @@ const jobsSchema = new mongoose.Schema({
         type: String,
         required: true,
     },
-    priority:{
+    priority: {
         type: String,
         required: true,
     },
@@ -44,12 +44,12 @@ const jobsSchema = new mongoose.Schema({
     barcode: {
         type: String,
         required: true
-      },
+    },
     // totalTime: {
     //     type: String,
     //     require: true
     // }
-},{
+}, {
     timestamps: true,
 });
 

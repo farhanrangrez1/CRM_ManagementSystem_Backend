@@ -110,24 +110,26 @@ const AllCostEstimates = async (req, res) => {
       return res.status(404).json({ success: false, message: "No cost estimates found" });
     }
 
-    const costEstimatesWithDetails = allCostEstimates.map(costEstimate => {
-      const costEstimateObj = costEstimate.toObject();
-      return {
-        ...costEstimateObj,
-        projects: Array.isArray(costEstimate.projectId)
-          ? costEstimate.projectId.map(project => ({
-            projectId: project?._id,
-            projectName: project?.projectName
-          }))
-          : [],
-        clients: Array.isArray(costEstimate.clientId)
-          ? costEstimate.clientId.map(client => ({
-            clientId: client?._id,
-            clientName: client?.clientName
-          }))
-          : []
-      };
-    });
+ const costEstimatesWithDetails = allCostEstimates.map(costEstimate => {
+  const costEstimateObj = costEstimate.toObject();
+
+  return {
+    ...costEstimateObj,
+    projects: Array.isArray(costEstimate.projectId)
+      ? costEstimate.projectId.map(project => ({
+          projectId: project?._id,
+          projectName: project?.projectName
+        }))
+      : [],
+    clients: costEstimate.clientId
+      ? [{
+          clientId: costEstimate.clientId._id,
+          clientName: costEstimate.clientId.clientName
+        }]
+      : []
+  };
+});
+
     res.status(200).json({
       success: true,
       costEstimates: costEstimatesWithDetails,
