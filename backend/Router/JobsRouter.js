@@ -10,11 +10,10 @@ router.get('/',AllJob)
 
 router.delete('/:id',deleteJob)
 
-router.patch('/',UpdateJob)
+router.patch('/:id',UpdateJob)
 
 router.get('/:id',SingleJob)
 
-router.put('/',UpdateJobAssign)
-
+router.put('/:id',UpdateJobAssign)
 
  module.exports = router 

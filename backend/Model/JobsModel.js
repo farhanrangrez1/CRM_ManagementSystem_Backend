@@ -25,6 +25,10 @@ const jobsSchema = new mongoose.Schema({
         type: String,
         required: true,
     },
+    packCode: {
+        type: String,
+        required: true,
+    },
     packSize: {
         type: String,
         required: true,

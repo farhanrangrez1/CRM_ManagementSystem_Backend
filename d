@@ -647,3 +647,134 @@ async(req,res)=>{
 
 
 module.exports = {userRegister,userlogin,getMe}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+const asyncHandler = require('express-async-handler');
+const ReceivablePurchase = require('../Model/ReceivablePurchaseModel');
+const Projects = require("../Model/ProjectsModel");
+const ClientManagement = require("../Model/ClientManagementModel");
+const cloudinary = require('../Config/cloudinary');
+const mongoose = require("mongoose");
+
+cloudinary.config({
+    cloud_name: 'dkqcqrrbp',
+    api_key: '418838712271323',
+    api_secret: 'p12EKWICdyHWx8LcihuWYqIruWQ'
+});
+
+const ReceivablePurchaseCreate = asyncHandler(async (req, res) => {
+  let {
+    projectsId,
+    ClientId,
+    Status,
+    ReceivedDate,
+    Amount
+  } = req.body;
+
+  try {
+    if (typeof projectsId === "string") {
+      try {
+        projectsId = JSON.parse(projectsId);
+      } catch (err) {
+        return res.status(400).json({
+          success: false,
+          message: "Invalid projectsId format",
+        });
+      }
+    }
+
+    if (!projectsId || !Array.isArray(projectsId)) {
+      return res.status(400).json({
+        success: false,
+        message: "projectsId is required and should be an array"
+      });
+    }
+
+    const projects = await Projects.find({ _id: { $in: projectsId } });
+    if (projects.length !== projectsId.length) {
+      return res.status(404).json({
+        success: false,
+        message: "One or more projects not found."
+      });
+    }
+
+    const client = await ClientManagement.findById(ClientId);
+    if (!client) {
+      return res.status(404).json({
+        success: false,
+        message: "Client not found."
+      });
+    }
+
+    let imageUrls = [];
+
+    if (req.files && req.files.image) {
+      const files = Array.isArray(req.files.image) ? req.files.image : [req.files.image];
+
+      for (const file of files) {
+        try {
+          const result = await cloudinary.uploader.upload(file.tempFilePath, {
+            folder: 'user_profiles',
+            resource_type: 'image',
+          });
+          if (result.secure_url) {
+            imageUrls.push(result.secure_url);
+          }
+        } catch (uploadError) {
+          console.error("Cloudinary upload error:", uploadError);
+        }
+      }
+    }
+
+    const newReceivablePurchase = new ReceivablePurchase({
+      projectsId,
+      ClientId,
+      ReceivedDate,
+      Status,
+      Amount,
+      image: imageUrls, 
+    });
+
+    await newReceivablePurchase.save();
+
+    res.status(201).json({
+      success: true,
+      message: "Receivable Purchase created successfully",
+      receivablePurchase: newReceivablePurchase,
+    });
+
+  } catch (error) {
+    console.error("Error creating Receivable Purchase:", error);
+    res.status(500).json({
+      success: false,
+      message: "An error occurred while creating the Receivable Purchase",
+      error: error.message,
+    });
+  }
+});
+
+
+module.exports = { ReceivablePurchaseCreate };

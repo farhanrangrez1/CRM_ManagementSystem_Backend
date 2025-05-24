@@ -18,6 +18,7 @@ const jobCreate = asyncHandler(async (req, res) => {
     flavour,
     packType,
     packSize,
+    packCode,
     priority,
     Status,
     assign,
@@ -48,6 +49,7 @@ const jobCreate = asyncHandler(async (req, res) => {
       subBrand,
       flavour,
       packType,
+      packCode,
       packSize,
       priority,
       Status,
@@ -141,19 +143,27 @@ const deleteJob = async (req, res) => {
 //METHOD:PUT
 const UpdateJob = async (req, res) => {
   try {
+    const jobId = req.params.id; // ✅ ID from URL
+
+    if (!jobId) {
+      return res.status(400).json({ message: 'Job ID is required' });
+    }
+
     const allowedFields = [
-      'projects',  // Project ID
+      'projects', 
       'projectName',
       'brandName',
       'subBrand',
       'flavour',
       'packType',
+      'packCode',
       'packSize',
       'priority',
       'Status',
       'assign',
       // 'totalTime',
     ];
+
     const updateData = {};
     allowedFields.forEach(field => {
       if (req.body[field] !== undefined) {
@@ -164,20 +174,24 @@ const UpdateJob = async (req, res) => {
     if (Object.keys(updateData).length === 0) {
       return res.status(400).json({ message: 'At least one field must be provided for update' });
     }
-    const updatedDiary = await Jobs.findByIdAndUpdate(
-      req.body.id,
+    const updatedJob = await Jobs.findByIdAndUpdate(
+      jobId,             
       updateData,
       { new: true }
     );
-    if (!updatedDiary) {
-      return res.status(404).json({ message: 'Diary not found' });
+
+    if (!updatedJob) {
+      return res.status(404).json({ message: 'Job not found' });
     }
-    res.status(200).json(updatedDiary);
+
+    res.status(200).json(updatedJob);
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: 'Server error', error });
   }
 };
+
+
 
 
 
@@ -193,6 +207,7 @@ const UpdateJobAssign = async (req, res) => {
       'subBrand',
       'flavour',
       'packType',
+      "packCode",
       'packSize',
       'priority',
       'Status',
@@ -230,7 +245,6 @@ const UpdateJobAssign = async (req, res) => {
     res.status(500).json({ message: 'Server error', error });
   }
 };
-
 
 //METHOD:Single
 //TYPE:PUBLIC
