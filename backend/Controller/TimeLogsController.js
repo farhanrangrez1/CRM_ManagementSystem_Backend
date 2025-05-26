@@ -113,15 +113,15 @@ const AllTimeLogs = async (req, res) => {
         ...TimeLogsObj,
         projects: Array.isArray(TimeLogs.projectId)
           ? TimeLogs.projectId.map(project => ({
-              projectId: project?._id,
-              projectName: project?.projectName,
-            }))
+            projectId: project?._id,
+            projectName: project?.projectName,
+          }))
           : [],
         jobs: Array.isArray(TimeLogs.jobId)
           ? TimeLogs.jobId.map(job => ({
-              jobId: job?._id,
-              jobName: job?.jobName,
-            }))
+            jobId: job?._id,
+            jobName: job?.jobName,
+          }))
           : [],
       };
     });
@@ -178,11 +178,11 @@ const UpdateTimeLogs = async (req, res) => {
     if (Object.keys(updateData).length === 0) {
       return res.status(400).json({ message: 'At least one field must be provided for update' });
     }
-  const updatedDiary = await TimeLogss.findOneAndUpdate(
-  { jobId: req.body.jobId },
-  updateData,
-  { new: true }
-);
+    const updatedDiary = await TimeLogss.findOneAndUpdate(
+      { jobId: req.body.jobId },
+      updateData,
+      { new: true }
+    );
     if (!updatedDiary) {
       return res.status(404).json({ message: 'Diary not found' });
     }
@@ -190,6 +190,48 @@ const UpdateTimeLogs = async (req, res) => {
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: 'Server error', error });
+  }
+};
+
+
+
+//GET SINGLE 	Extra Hours
+//METHOD:PUT
+const UpdateExtraHours = async (req, res) => {
+  try {
+    const { id, extraHours } = req.body;
+
+    if (!Array.isArray(id) || id.length === 0) {
+      return res.status(400).json({ message: 'ID array is required and must not be empty' });
+    }
+
+    if (extraHours === undefined) {
+      return res.status(400).json({ message: 'extraHours value is required' });
+    }
+
+    // Validate ObjectIds
+    const validIds = id.filter(mongoose.Types.ObjectId.isValid);
+    if (validIds.length === 0) {
+      return res.status(400).json({ message: 'No valid ObjectIds provided' });
+    }
+
+    // Properly convert to ObjectId with 'new'
+    const objectIds = validIds.map(_id => new mongoose.Types.ObjectId(_id));
+
+    // Update all matching TimeLogs
+    const updatedResult = await TimeLogss.updateMany(
+      { _id: { $in: objectIds } },
+      { $set: { extraHours } }
+    );
+
+    res.status(200).json({
+      message: 'extraHours updated successfully',
+      matchedCount: updatedResult.matchedCount,
+      modifiedCount: updatedResult.modifiedCount
+    });
+  } catch (error) {
+    console.error("UpdateExtraHours Error:", error.message, error.stack);
+    res.status(500).json({ message: 'Server error', error: error.message });
   }
 };
 
@@ -206,4 +248,4 @@ const UpdateTimeLogs = async (req, res) => {
 // }
 
 
-module.exports = { TimeLogsCreate,AllTimeLogs ,UpdateTimeLogs,deleteTimeLogs};
+module.exports = { TimeLogsCreate, AllTimeLogs, UpdateTimeLogs, deleteTimeLogs,UpdateExtraHours };

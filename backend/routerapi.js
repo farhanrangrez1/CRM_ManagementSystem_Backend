@@ -16,5 +16,6 @@ routerapi.use('/api/costEstimates', require('./Router/CostEstimatesRouter'));
 routerapi.use('/api/timeLogs', require('./Router/TimeLogsRouter'));
 // ReceivablePurchase
 routerapi.use('/api/receivablePurchase', require('./Router/ReceivablePurchaseRouter'));
-
+// TimesheetWorklog
+routerapi.use('/api/timesheetWorklog', require('./Router/TimesheetWorklogRouter'));
 module.exports = routerapi

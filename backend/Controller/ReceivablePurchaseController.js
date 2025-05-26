@@ -6,9 +6,9 @@ const cloudinary = require('../Config/cloudinary');
 const mongoose = require("mongoose");
 
 cloudinary.config({
-    cloud_name: 'dkqcqrrbp',
-    api_key: '418838712271323',
-    api_secret: 'p12EKWICdyHWx8LcihuWYqIruWQ'
+  cloud_name: 'dkqcqrrbp',
+  api_key: '418838712271323',
+  api_secret: 'p12EKWICdyHWx8LcihuWYqIruWQ'
 });
 
 const ReceivablePurchaseCreate = asyncHandler(async (req, res) => {
@@ -75,12 +75,12 @@ const ReceivablePurchaseCreate = asyncHandler(async (req, res) => {
     }
 
     const newReceivablePurchase = new ReceivablePurchase({
-    projectId: projectsId,
+      projectId: projectsId,
       ClientId,
       ReceivedDate,
       Status,
       Amount,
-      image: imageUrls, 
+      image: imageUrls,
     });
 
     await newReceivablePurchase.save();
@@ -104,41 +104,49 @@ const ReceivablePurchaseCreate = asyncHandler(async (req, res) => {
 
 //GET SINGLE AllReceivablePurchase
 //METHOD:GET
-
 const AllReceivablePurchase = async (req, res) => {
   try {
     const allReceivablePurchases = await ReceivablePurchase.find()
       .populate({
-        path: 'projectId',  
+        path: 'projectId',
         select: '_id projectName',
         model: 'Projects'
       })
       .populate({
         path: 'ClientId',
-        select: '_id name',
+        select: '_id clientName',  
         model: 'ClientManagement'
       });
+
     if (!allReceivablePurchases || allReceivablePurchases.length === 0) {
       return res.status(404).json({ success: false, message: "No receivable purchases found" });
     }
+
     const receivablePurchasesWithDetails = allReceivablePurchases.map(purchase => {
       const purchaseObj = purchase.toObject();
 
       return {
         ...purchaseObj,
-
         projects: Array.isArray(purchase.projectId)
           ? purchase.projectId.map(project => ({
-              projectId: project?._id.toString(),
-              projectName: project?.projectName
-            }))
-          : [],
-        clients: purchase.ClientId ? [{
-          clientId: purchase.ClientId._id.toString(),
-          clientName: purchase.ClientId.name
-        }] : [],
+            projectId: project?._id,
+            projectName: project?.projectName
+          }))
+          : purchase.projectId
+            ? [{
+              projectId: purchase.projectId._id,
+              projectName: purchase.projectId.projectName
+            }]
+            : [],
+         clients: purchase.ClientId
+          ? [{
+            clientId: purchase.ClientId._id,
+            clientName: purchase.ClientId.clientName
+          }]
+          : []
       };
     });
+
     res.status(200).json({
       success: true,
       receivablePurchases: receivablePurchasesWithDetails,
@@ -170,40 +178,40 @@ const deleteReceivablePurchase = async (req, res) => {
 
 
 //GET SINGLE ClientUpdate
-  //METHOD:PUT
-  const UpdateReceivablePurchase = async (req, res) => {
-    try {
-      const allowedFields = [
-        'projectId',
-        'ClientId',
-        'ReceivedDate',
-        'Status',
-        'Amount',
-        'image'
-      ];
-      const updateData = {};
-      allowedFields.forEach(field => {
-        if (req.body[field] !== undefined) {
-          updateData[field] = req.body[field];
-        }
-      });
+//METHOD:PUT
+const UpdateReceivablePurchase = async (req, res) => {
+  try {
+    const allowedFields = [
+      'projectId',
+      'ClientId',
+      'ReceivedDate',
+      'Status',
+      'Amount',
+      'image'
+    ];
+    const updateData = {};
+    allowedFields.forEach(field => {
+      if (req.body[field] !== undefined) {
+        updateData[field] = req.body[field];
+      }
+    });
 
-      if (Object.keys(updateData).length === 0) {
-        return res.status(400).json({ message: 'At least one field must be provided for update' });
-      }
-      const updatedReceivablePurchase = await ReceivablePurchase.findByIdAndUpdate(
-        req.params.id,
-        updateData,
-        { new: true }
-      );
-      if (!updatedReceivablePurchase) {
-        return res.status(404).json({ message: 'Receivable Purchase not found' });
-      }
-      res.status(200).json(updatedReceivablePurchase);
-    } catch (error) {
-      console.error(error);
-      res.status(500).json({ message: 'Server error', error });
+    if (Object.keys(updateData).length === 0) {
+      return res.status(400).json({ message: 'At least one field must be provided for update' });
     }
-  };
-  
-module.exports = { ReceivablePurchaseCreate ,AllReceivablePurchase, deleteReceivablePurchase, UpdateReceivablePurchase};
+    const updatedReceivablePurchase = await ReceivablePurchase.findByIdAndUpdate(
+      req.params.id,
+      updateData,
+      { new: true }
+    );
+    if (!updatedReceivablePurchase) {
+      return res.status(404).json({ message: 'Receivable Purchase not found' });
+    }
+    res.status(200).json(updatedReceivablePurchase);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Server error', error });
+  }
+};
+
+module.exports = { ReceivablePurchaseCreate, AllReceivablePurchase, deleteReceivablePurchase, UpdateReceivablePurchase };

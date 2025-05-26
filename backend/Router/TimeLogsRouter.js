@@ -1,5 +1,5 @@
 const express=require('express');
-const { TimeLogsCreate, AllTimeLogs, UpdateTimeLogs, deleteTimeLogs } = require('../Controller/TimeLogsController');
+const { TimeLogsCreate, AllTimeLogs, UpdateTimeLogs, deleteTimeLogs, UpdateExtraHours } = require('../Controller/TimeLogsController');
 
 
 const router = express.Router()
@@ -14,7 +14,7 @@ router.patch('/:id',UpdateTimeLogs)
 
 // router.get('/:id',SingleJob)
 
-// router.put('/',UpdateJobAssign)
+router.put('/',UpdateExtraHours)
 
 
  module.exports = router 

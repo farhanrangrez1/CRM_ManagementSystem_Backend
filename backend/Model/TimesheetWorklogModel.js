@@ -2,8 +2,8 @@ const mongoose = require("mongoose");
 
 const Projects = require("./ProjectsModel");
 const Jobs = require('./JobsModel');
-
-const TimeLogsSchema = new mongoose.Schema({
+				
+const TimesheetWorklogSchema = new mongoose.Schema({
     projectId: [{
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Projects',
@@ -18,15 +18,29 @@ const TimeLogsSchema = new mongoose.Schema({
         type: Date,
         required: true,
     },
-    extraHours: {
+    startTime: {
         type: String,
         required: true,
     },
+    endTime:{
+        type: String,
+        required: true,
+    },
+    taskDescription: {
+        type: String,
+        required: true,
+    },
+
     hours: {
         type:String,
         required: true,
     },
-    taskNotes: {
+    status:{
+        type: String,
+        required: true,
+        default: 'Pending',
+    },
+    tags: {
         type: String,
         required: true,
     },
@@ -35,5 +49,5 @@ const TimeLogsSchema = new mongoose.Schema({
 });
 
 
-module.exports = mongoose.model('TimeLogs', TimeLogsSchema);
+module.exports = mongoose.model('TimesheetWorklog', TimesheetWorklogSchema);
 
