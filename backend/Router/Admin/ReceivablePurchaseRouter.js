@@ -1,5 +1,5 @@
 const express=require('express');
-const { ReceivablePurchaseCreate, AllReceivablePurchase, deleteReceivablePurchase, UpdateReceivablePurchase } = require('../Controller/ReceivablePurchaseController');
+const { ReceivablePurchaseCreate, AllReceivablePurchase, deleteReceivablePurchase, UpdateReceivablePurchase } = require('../../Controller/Admin/ReceivablePurchaseController');
 
 
 const router = express.Router()

@@ -1,8 +1,8 @@
 const asyncHandler = require('express-async-handler');
-const TimesheetWorklogs = require('../Model/TimesheetWorklogModel');
-const Projects = require("../Model/ProjectsModel");
-const Jobs = require('../Model/JobsModel');
-const cloudinary = require('../Config/cloudinary');
+const TimesheetWorklogs = require('../../Model/Admin/TimesheetWorklogModel');
+const Projects = require("../../Model/Admin/ProjectsModel");
+const Jobs = require('../../Model/Admin/JobsModel');
+const cloudinary = require('../../Config/cloudinary');
 const mongoose = require("mongoose");
 
 cloudinary.config({

@@ -1,5 +1,5 @@
 const express=require('express');
-const { TimesheetWorklogCreate, AllTimesheetWorklog, deleteTimesheetWorklog, UpdateTimesheetWorklog } = require('../Controller/TimesheetWorklogController');
+const { TimesheetWorklogCreate, AllTimesheetWorklog, deleteTimesheetWorklog, UpdateTimesheetWorklog } = require('../../Controller/Admin/TimesheetWorklogController');
 
 
 const router = express.Router()

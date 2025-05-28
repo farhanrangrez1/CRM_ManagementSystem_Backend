@@ -1,5 +1,5 @@
 const express=require('express');
-const { jobCreate, AllJob, deleteJob, UpdateJob, SingleJob, UpdateJobAssign } = require('../Controller/JobsController');
+const { jobCreate, AllJob, deleteJob, UpdateJob, SingleJob, UpdateJobAssign } = require('../../Controller/Admin/JobsController');
 
 
 const router = express.Router()

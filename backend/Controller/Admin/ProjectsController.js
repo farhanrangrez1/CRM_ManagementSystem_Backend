@@ -1,7 +1,7 @@
 const asyncHandler = require("express-async-handler");
-const Projects = require("../Model/ProjectsModel");
+const Projects = require("../../Model/Admin/ProjectsModel");
 
-const cloudinary = require('../Config/cloudinary');
+const cloudinary = require('../../Config/cloudinary');
 
 
 cloudinary.config({
@@ -9,7 +9,6 @@ cloudinary.config({
   api_key: '418838712271323',
   api_secret: 'p12EKWICdyHWx8LcihuWYqIruWQ'
 });
-
 
 const createProjects = async (req, res) => {
   const {

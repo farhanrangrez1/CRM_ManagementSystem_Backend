@@ -1,5 +1,5 @@
 const express=require('express');
-const { costEstimatesCreate, AllCostEstimates, deleteCostEstimate, UpdateCostEstimate, SingleCostEstimate } = require('../Controller/CostEstimatesController');
+const { costEstimatesCreate, AllCostEstimates, deleteCostEstimate, UpdateCostEstimate, SingleCostEstimate } = require('../../Controller/Admin/CostEstimatesController');
 
 
 const router = express.Router()

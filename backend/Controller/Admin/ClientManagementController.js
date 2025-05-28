@@ -1,6 +1,6 @@
 const asyncHandler = require('express-async-handler');
-const ClientManagement = require("../Model/ClientManagementModel");
-const cloudinary = require('../Config/cloudinary');
+const ClientManagement = require("../../Model/Admin/ClientManagementModel");
+const cloudinary = require('../../Config/cloudinary');
 const mongoose = require("mongoose");
 
 cloudinary.config({

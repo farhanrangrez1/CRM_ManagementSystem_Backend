@@ -1,5 +1,5 @@
 const express=require('express');
-const { TimeLogsCreate, AllTimeLogs, UpdateTimeLogs, deleteTimeLogs, UpdateExtraHours } = require('../Controller/TimeLogsController');
+const { TimeLogsCreate, AllTimeLogs, UpdateTimeLogs, deleteTimeLogs, UpdateExtraHours } = require('../../Controller/Admin/TimeLogsController');
 
 
 const router = express.Router()
