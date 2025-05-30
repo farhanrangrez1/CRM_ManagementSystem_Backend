@@ -26,6 +26,12 @@ const CostEstimatesSchema = new mongoose.Schema({
         type: String,
         required: true,
        },
+       estimateRef: {
+  type: String,
+  required: true,
+  unique: true
+},
+
 
    lineItems:[{
     description:{

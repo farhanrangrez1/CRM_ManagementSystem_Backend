@@ -3,6 +3,7 @@ const CostEstimates = require('../../Model/Admin/CostEstimatesModel');
 const Projects = require("../../Model/Admin/ProjectsModel");
 const ClientManagement = require("../../Model/Admin/ClientManagementModel");
 const cloudinary = require('../../Config/cloudinary');
+const generateEstimateRef = require('../../middlewares/generateEstimateRef');
 const mongoose = require("mongoose");
 
 cloudinary.config({
@@ -10,7 +11,6 @@ cloudinary.config({
   api_key: '418838712271323',
   api_secret: 'p12EKWICdyHWx8LcihuWYqIruWQ'
 });
-
 const costEstimatesCreate = asyncHandler(async (req, res) => {
   const {
     projectsId,
@@ -26,42 +26,28 @@ const costEstimatesCreate = asyncHandler(async (req, res) => {
   } = req.body;
 
   try {
-    // Validate Project IDs
     if (!Array.isArray(projectsId) || projectsId.some(id => !mongoose.Types.ObjectId.isValid(id))) {
-      return res.status(400).json({
-        success: false,
-        message: "Invalid Project ID format. Ensure all IDs are valid."
-      });
+      return res.status(400).json({ success: false, message: "Invalid Project ID format." });
     }
 
-    // Validate Client IDs
-    if (!Array.isArray(clientId) || clientId.some(id => !mongoose.Types.ObjectId.isValid(id))) {
-      return res.status(400).json({
-        success: false,
-        message: "Invalid Client ID format. Ensure all IDs are valid."
-      });
+    if (!mongoose.Types.ObjectId.isValid(clientId)) {
+      return res.status(400).json({ success: false, message: "Invalid Client ID format." });
     }
 
-    // Check Projects exist
     const projects = await Projects.find({ '_id': { $in: projectsId } });
     if (projects.length !== projectsId.length) {
-      return res.status(404).json({
-        success: false,
-        message: "One or more projects not found"
-      });
+      return res.status(404).json({ success: false, message: "One or more projects not found" });
     }
 
-    // Check Clients exist
-    const clients = await ClientManagement.find({ '_id': { $in: clientId } });
-    if (clients.length !== clientId.length) {
-      return res.status(404).json({
-        success: false,
-        message: "One or more clients not found"
-      });
+    const client = await ClientManagement.findById(clientId);
+    if (!client) {
+      return res.status(404).json({ success: false, message: "Client not found" });
     }
 
-    // Create new estimate
+    const estimateRef = await generateEstimateRef();
+
     const newCostEstimate = new CostEstimates({
+      estimateRef,
       projectId: projectsId,
       clientId,
       estimateDate,
@@ -90,6 +76,7 @@ const costEstimatesCreate = asyncHandler(async (req, res) => {
     });
   }
 });
+
 
 // GET All Cost Estimates with project and client info
 const AllCostEstimates = async (req, res) => {

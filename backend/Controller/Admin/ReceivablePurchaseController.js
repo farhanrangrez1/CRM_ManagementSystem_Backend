@@ -11,6 +11,7 @@ cloudinary.config({
   api_secret: 'p12EKWICdyHWx8LcihuWYqIruWQ'
 });
 
+
 const ReceivablePurchaseCreate = asyncHandler(async (req, res) => {
   let {
     projectsId,
@@ -54,11 +55,10 @@ const ReceivablePurchaseCreate = asyncHandler(async (req, res) => {
         message: "Client not found."
       });
     }
-    let imageUrls = [];
 
+    let imageUrls = [];
     if (req.files && req.files.image) {
       const files = Array.isArray(req.files.image) ? req.files.image : [req.files.image];
-
       for (const file of files) {
         try {
           const result = await cloudinary.uploader.upload(file.tempFilePath, {
@@ -102,9 +102,11 @@ const ReceivablePurchaseCreate = asyncHandler(async (req, res) => {
 });
 
 
+
+
 //GET SINGLE AllReceivablePurchase
 //METHOD:GET
-const AllReceivablePurchase = async (req, res) => {
+const AllReceivablePurchase = asyncHandler(async (req, res) => {
   try {
     const allReceivablePurchases = await ReceivablePurchase.find()
       .populate({
@@ -114,12 +116,15 @@ const AllReceivablePurchase = async (req, res) => {
       })
       .populate({
         path: 'ClientId',
-        select: '_id clientName',  
+        select: '_id clientName',
         model: 'ClientManagement'
       });
 
     if (!allReceivablePurchases || allReceivablePurchases.length === 0) {
-      return res.status(404).json({ success: false, message: "No receivable purchases found" });
+      return res.status(404).json({
+        success: false,
+        message: "No receivable purchases found"
+      });
     }
 
     const receivablePurchasesWithDetails = allReceivablePurchases.map(purchase => {
@@ -127,23 +132,18 @@ const AllReceivablePurchase = async (req, res) => {
 
       return {
         ...purchaseObj,
-        projects: Array.isArray(purchase.projectId)
-          ? purchase.projectId.map(project => ({
-            projectId: project?._id,
-            projectName: project?.projectName
-          }))
-          : purchase.projectId
-            ? [{
-              projectId: purchase.projectId._id,
-              projectName: purchase.projectId.projectName
-            }]
-            : [],
-         clients: purchase.ClientId
-          ? [{
-            clientId: purchase.ClientId._id,
-            clientName: purchase.ClientId.clientName
-          }]
-          : []
+        projects: Array.isArray(purchaseObj.projectId)
+          ? purchaseObj.projectId.map(project => ({
+              projectId: project?._id,
+              projectName: project?.projectName
+            }))
+          : [],
+        client: purchaseObj.ClientId
+          ? {
+              clientId: purchaseObj.ClientId._id,
+              clientName: purchaseObj.ClientId.clientName
+            }
+          : null
       };
     });
 
@@ -160,7 +160,9 @@ const AllReceivablePurchase = async (req, res) => {
       error: error.message,
     });
   }
-};
+});
+
+
 
 
 //GET SINGLE DeleteProjects

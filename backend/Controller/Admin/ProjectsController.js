@@ -1,8 +1,9 @@
 const asyncHandler = require("express-async-handler");
 const Projects = require("../../Model/Admin/ProjectsModel");
+const ClientManagement = require("../../Model/Admin/ClientManagementModel"); // Make sure the path is correct
+
 
 const cloudinary = require('../../Config/cloudinary');
-
 
 cloudinary.config({
   cloud_name: 'dkqcqrrbp',
@@ -23,10 +24,21 @@ const createProjects = async (req, res) => {
     projectRequirements,
     budgetAmount,
     currency,
-    // totalTime
   } = req.body;
 
   try {
+    // ✅ Validate Client ID
+    const existingClient = await ClientManagement.findById(clientId);
+    if (!existingClient) {
+      return res.status(400).json({
+        success: false,
+        message: 'Invalid clientId. No such client exists.',
+      });
+    }
+
+    
+    
+    // Optionally validate managerId similarly if needed
     const newAssignment = new Projects({
       projectName,
       clientId,
@@ -39,15 +51,16 @@ const createProjects = async (req, res) => {
       projectRequirements,
       budgetAmount,
       currency,
-      // totalTime
     });
+
     const savedAssignment = await newAssignment.save();
+
     res.status(201).json({
       success: true,
       message: 'Project created successfully',
       data: savedAssignment.toJSON(),
     });
-  
+
   } catch (error) {
     res.status(500).json({
       success: false,
@@ -56,6 +69,7 @@ const createProjects = async (req, res) => {
     });
   }
 };
+
 
 
 
