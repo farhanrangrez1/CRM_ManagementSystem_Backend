@@ -3,6 +3,7 @@ const Jobs = require('../../Model/Admin/JobsModel');
 const Projects = require("../../Model/Admin/ProjectsModel");
 const cloudinary = require('../../Config/cloudinary');
 const mongoose = require("mongoose")
+const {generateJobsNo} = require('../../middlewares/generateEstimateRef');
 
 cloudinary.config({
   cloud_name: 'dkqcqrrbp',
@@ -12,7 +13,7 @@ cloudinary.config({
 
 const jobCreate = asyncHandler(async (req, res) => {
   const {
-    projectsId, 
+    projectsId,
     brandName,
     subBrand,
     flavour,
@@ -42,9 +43,11 @@ const jobCreate = asyncHandler(async (req, res) => {
         message: "One or more projects not found"
       });
     }
+         const JobNo = await generateJobsNo();
     // Create the new Job
     const newJob = new Jobs({
-      projectId: projectsId, 
+      projectId: projectsId,
+      JobNo,
       brandName,
       subBrand,
       flavour,
@@ -60,7 +63,7 @@ const jobCreate = asyncHandler(async (req, res) => {
 
     await newJob.save();
     const jobData = newJob.toObject();
-    jobData.projectId = jobData.projectId; 
+    jobData.projectId = jobData.projectId;
     delete jobData.projects;
 
     res.status(201).json({
@@ -77,42 +80,77 @@ const jobCreate = asyncHandler(async (req, res) => {
   }
 });
 
+const AllJobID = async (req, res) => {
+  try {
+    const { projectId } = req.params;
 
+    if (!mongoose.Types.ObjectId.isValid(projectId)) {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid projectId",
+      });
+    }
+
+    const allJobs = await Jobs.find({ projectId })
+      .populate({
+        path: 'projectId',
+        select: '_id projectName',
+        model: 'Projects',
+      });
+
+    const jobsWithDetails = allJobs.map(job => ({
+      ...job.toObject(),
+      projects: job.projectId
+        ? {
+            projectId: job.projectId._id,
+            projectName: job.projectId.projectName,
+          }
+        : {},
+    }));
+
+    res.status(200).json({
+      success: true,
+      jobs: jobsWithDetails, // will be [] if no jobs found
+    });
+  } catch (error) {
+    console.error("Error fetching jobs:", error);
+    res.status(500).json({
+      success: false,
+      message: "An error occurred while fetching jobs",
+      error: error.message,
+    });
+  }
+};
 
 //GET SINGLE AllProjects
 //METHOD:GET
 // GET All Jobs with project and client info
-// GET All Jobs with project and client info
 const AllJob = async (req, res) => {
   try {
     const allJobs = await Jobs.find().populate({
-      path: 'projectId', // ✅ Corrected from "projectsId"
+      path: 'projectId', 
       select: '_id projectName',
       model: 'Projects'
     });
-
     if (!allJobs || allJobs.length === 0) {
       return res.status(404).json({ success: false, message: "No jobs found" });
     }
-
     const jobsWithDetails = allJobs.map(job => {
       const jobObj = job.toObject();
       return {
         ...jobObj,
         projects: Array.isArray(job.projectId)
           ? job.projectId.map(project => ({
-              projectId: project?._id,
-              projectName: project?.projectName
-            }))
+            projectId: project?._id,
+            projectName: project?.projectName
+          }))
           : []
       };
     });
-
     res.status(200).json({
       success: true,
       jobs: jobsWithDetails,
     });
-
   } catch (error) {
     console.error("Error fetching jobs:", error);
     res.status(500).json({
@@ -125,6 +163,46 @@ const AllJob = async (req, res) => {
 
 
 
+//GET SINGLE AllProjects
+//METHOD:GET
+// GET All Jobs with project and client info
+const filter = async (req, res) => {
+  try {
+  const {Status} = req.params 
+    const allJobs = await Jobs.find({Status:Status}).populate({
+      path: 'projectId', 
+      select: '_id projectName',
+      model: 'Projects'
+    });
+    
+    if (!allJobs || allJobs.length === 0) {
+      return res.status(404).json({ success: false, message: "No jobs found" });
+    }
+    const jobsWithDetails = allJobs.map(job => {
+      const jobObj = job.toObject();
+      return {
+        ...jobObj,
+        projects: Array.isArray(job.projectId)
+          ? job.projectId.map(project => ({
+            projectId: project?._id,
+            projectName: project?.projectName
+          }))
+          : []
+      };
+    });
+    res.status(200).json({
+      success: true,
+      jobs: jobsWithDetails,
+    });
+  } catch (error) {
+    console.error("Error fetching jobs:", error);
+    res.status(500).json({
+      success: false,
+      message: "An error occurred while fetching jobs",
+      error: error.message,
+    });
+  }
+};
 
 //GET SINGLE DeleteProjects
 //METHOD:DELETE
@@ -138,7 +216,6 @@ const deleteJob = async (req, res) => {
   }
 }
 
-
 //GET SINGLE ProjectsUpdate
 //METHOD:PUT
 const UpdateJob = async (req, res) => {
@@ -148,9 +225,8 @@ const UpdateJob = async (req, res) => {
     if (!jobId) {
       return res.status(400).json({ message: 'Job ID is required' });
     }
-
     const allowedFields = [
-      'projects', 
+      'projects',
       'projectName',
       'brandName',
       'subBrand',
@@ -175,7 +251,7 @@ const UpdateJob = async (req, res) => {
       return res.status(400).json({ message: 'At least one field must be provided for update' });
     }
     const updatedJob = await Jobs.findByIdAndUpdate(
-      jobId,             
+      jobId,
       updateData,
       { new: true }
     );
@@ -190,10 +266,6 @@ const UpdateJob = async (req, res) => {
     res.status(500).json({ message: 'Server error', error });
   }
 };
-
-
-
-
 
 
 //GET SINGLE ProjectsUpdate
@@ -231,8 +303,8 @@ const UpdateJobAssign = async (req, res) => {
     }
 
     const updatedResult = await Jobs.updateMany(
-      { _id: { $in: req.body.id } }, 
-      { $set: updateData }       
+      { _id: { $in: req.body.id } },
+      { $set: updateData }
     );
 
     res.status(200).json({
@@ -258,4 +330,4 @@ const SingleJob = async (req, res) => {
 }
 
 
-module.exports = { jobCreate, AllJob, deleteJob, UpdateJob, SingleJob,UpdateJobAssign };
+module.exports = { jobCreate, AllJob, deleteJob, UpdateJob, SingleJob, UpdateJobAssign, AllJobID ,filter};

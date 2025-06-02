@@ -148,6 +148,10 @@ const userSchema = new mongoose.Schema({
         type: String,
         required: true,
     },
+    assign:{
+        type:String,
+        required:true
+    },
     permissions: {
         dashboardAccess: { type: Boolean, default: false },
         clientManagement: { type: Boolean, default: false },

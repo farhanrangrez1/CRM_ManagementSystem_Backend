@@ -1,7 +1,7 @@
 const asyncHandler = require("express-async-handler");
 const Projects = require("../../Model/Admin/ProjectsModel");
 const ClientManagement = require("../../Model/Admin/ClientManagementModel"); // Make sure the path is correct
-
+const {generateProjectNo} = require('../../middlewares/generateEstimateRef');
 
 const cloudinary = require('../../Config/cloudinary');
 
@@ -11,11 +11,11 @@ cloudinary.config({
   api_secret: 'p12EKWICdyHWx8LcihuWYqIruWQ'
 });
 
-const createProjects = async (req, res) => {
+const createProjects = asyncHandler(async (req, res) => {
   const {
     projectName,
     clientId,
-    managerId,
+    // managerId,
     startDate,
     endDate,
     projectPriority,
@@ -36,13 +36,14 @@ const createProjects = async (req, res) => {
       });
     }
 
-    
+     const projectNo = await generateProjectNo();
     
     // Optionally validate managerId similarly if needed
     const newAssignment = new Projects({
+      projectNo,
       projectName,
       clientId,
-      managerId,
+      // managerId,
       startDate,
       endDate,
       projectPriority,
@@ -68,8 +69,8 @@ const createProjects = async (req, res) => {
       error: error.message,
     });
   }
-};
-
+}
+)
 
 
 
@@ -115,7 +116,7 @@ const createProjects = async (req, res) => {
       const allowedFields = [
         'projectName',
         'clientId',
-        'managerId',
+        // 'managerId',
         'startDate',
         'endDate',
         'projectPriority',

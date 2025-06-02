@@ -1,10 +1,14 @@
 const express=require('express');
-const { jobCreate, AllJob, deleteJob, UpdateJob, SingleJob, UpdateJobAssign } = require('../../Controller/Admin/JobsController');
+const { jobCreate, AllJob, deleteJob, UpdateJob, SingleJob, UpdateJobAssign, AllJobID, filter } = require('../../Controller/Admin/JobsController');
 
 
 const router = express.Router()
 
 router.post('/',jobCreate)
+
+router.get('/:projectId', AllJobID);
+
+router.get('/filter/:Status',filter)
 
 router.get('/',AllJob)
 

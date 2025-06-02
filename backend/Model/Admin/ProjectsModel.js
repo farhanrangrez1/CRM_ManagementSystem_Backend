@@ -4,7 +4,12 @@ const ClientManagement = require("./ClientManagementModel");
 
 
 const ProjectsSchema = new mongoose.Schema({
-    projectName: {
+  projectNo: {
+    type: String,
+    required: true,
+    unique: true
+  },
+  projectName: {
     type: String,
     required: true,
   },
@@ -13,11 +18,11 @@ const ProjectsSchema = new mongoose.Schema({
     ref: 'ClientManagement',
     required: true,
   },
-  managerId:{
-    type: mongoose.Schema.Types.ObjectId,  //id projectManager
-    ref: 'projectManager',
-    required: true,
-  },
+  // managerId: {
+  //   type: mongoose.Schema.Types.ObjectId,  //id projectManager
+  //   ref: 'projectManager',
+  //   required: true,
+  // },
   startDate: {
     type: Date,
     required: true,
@@ -26,7 +31,7 @@ const ProjectsSchema = new mongoose.Schema({
     type: Date,
     required: true,
   },
-  projectPriority:{
+  projectPriority: {
     type: String,
     required: true,
   },
@@ -34,36 +39,36 @@ const ProjectsSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-   status: {
+  status: {
     type: String,
     required: true,
   },
-  projectRequirements:[{
-    creativeDesign :{
-        type: Boolean,
-    required: true,
+  projectRequirements: [{
+    creativeDesign: {
+      type: Boolean,
+      required: true,
     },
-    artworkAdaptation:{
-        type: Boolean,
-    required: true,
+    artworkAdaptation: {
+      type: Boolean,
+      required: true,
     },
-    prepress:{
-        type: Boolean,
-    required: true,
+    prepress: {
+      type: Boolean,
+      required: true,
     },
-    POS:{
-        type: Boolean,
-    required: true,
+    POS: {
+      type: Boolean,
+      required: true,
     },
-    mockups:{
-        type:Boolean,
-    required: true,
+    mockups: {
+      type: Boolean,
+      required: true,
     },
-    rendering:{
-    type: Boolean,
-    required: true,
+    rendering: {
+      type: Boolean,
+      required: true,
     },
-    _id:false,
+    _id: false,
   }],
 
   budgetAmount: {
@@ -71,7 +76,7 @@ const ProjectsSchema = new mongoose.Schema({
     required: true,
   },
   currency: {
-    type:String,
+    type: String,
     required: true,
   },
   // totalTime :{

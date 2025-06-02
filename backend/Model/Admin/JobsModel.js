@@ -8,6 +8,11 @@ const jobsSchema = new mongoose.Schema({
         ref: 'Projects',
         required: true,
     }],
+    JobNo: {
+    type: String,
+    required: true,
+    unique: true
+  },
     brandName: {
         type: String,
         required: true,
