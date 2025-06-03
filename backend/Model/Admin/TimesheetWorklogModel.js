@@ -2,7 +2,8 @@ const mongoose = require("mongoose");
 
 const Projects = require("./ProjectsModel");
 const Jobs = require('./JobsModel');
-				
+// const User = require('./Model/userModel');
+
 const TimesheetWorklogSchema = new mongoose.Schema({
     projectId: [{
         type: mongoose.Schema.Types.ObjectId,
@@ -14,6 +15,11 @@ const TimesheetWorklogSchema = new mongoose.Schema({
         ref: 'Jobs',
         required: true
     }],
+    employeeId: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User',
+        required: true
+    }],
     date: {
         type: Date,
         required: true,
@@ -22,7 +28,7 @@ const TimesheetWorklogSchema = new mongoose.Schema({
         type: String,
         required: true,
     },
-    endTime:{
+    endTime: {
         type: String,
         required: true,
     },
@@ -32,10 +38,10 @@ const TimesheetWorklogSchema = new mongoose.Schema({
     },
 
     hours: {
-        type:String,
-        required: true,
+        type: String,
+        required: false // or just remove 'required'
     },
-    status:{
+    status: {
         type: String,
         required: true,
         default: 'Pending',

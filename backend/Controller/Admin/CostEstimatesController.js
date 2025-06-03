@@ -26,9 +26,10 @@ const costEstimatesCreate = asyncHandler(async (req, res) => {
   } = req.body;
 
   try {
-    if (!Array.isArray(projectsId) || projectsId.some(id => !mongoose.Types.ObjectId.isValid(id))) {
-      return res.status(400).json({ success: false, message: "Invalid Project ID format." });
-    }
+if (!Array.isArray(projectsId) || projectsId.some(id => !mongoose.Types.ObjectId.isValid(id))) {
+  return res.status(400).json({ success: false, message: "Invalid Project ID format." });
+}
+
 
     if (!mongoose.Types.ObjectId.isValid(clientId)) {
       return res.status(400).json({ success: false, message: "Invalid Client ID format." });

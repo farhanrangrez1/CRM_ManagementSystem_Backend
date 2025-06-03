@@ -18,7 +18,6 @@ const jobsSchema = new mongoose.Schema({
         required: true,
     },
     subBrand: {
-
         type: String,
         required: true,
     },
