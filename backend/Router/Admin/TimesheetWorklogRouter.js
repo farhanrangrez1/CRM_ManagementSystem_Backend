@@ -1,12 +1,12 @@
 const express=require('express');
-const { TimesheetWorklogCreate, AllTimesheetWorklog, deleteTimesheetWorklog, UpdateTimesheetWorklog } = require('../../Controller/Admin/TimesheetWorklogController');
+const { TimesheetWorklogCreate, getAllTimesheetWorklogs, deleteTimesheetWorklog, UpdateTimesheetWorklog } = require('../../Controller/Admin/TimesheetWorklogController');
 
 
 const router = express.Router()
 
 router.post('/',TimesheetWorklogCreate)
 
-router.get('/',AllTimesheetWorklog)
+router.get('/',getAllTimesheetWorklogs)
 
 router.delete('/:id',deleteTimesheetWorklog)
 

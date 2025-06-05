@@ -2,20 +2,21 @@ const asyncHandler = require('express-async-handler');
 const ReceivablePurchase = require('../../Model/Admin/ReceivablePurchaseModel');
 const Projects = require("../../Model/Admin/ProjectsModel");
 const ClientManagement = require("../../Model/Admin/ClientManagementModel");
+const CostEstimates = require('../../Model/Admin/CostEstimatesModel');
 const cloudinary = require('../../Config/cloudinary');
 const mongoose = require("mongoose");
+const { ReceivablePurchaseNo } = require('../../middlewares/generateEstimateRef');
 
 cloudinary.config({
   cloud_name: 'dkqcqrrbp',
   api_key: '418838712271323',
   api_secret: 'p12EKWICdyHWx8LcihuWYqIruWQ'
 });
-
-
 const ReceivablePurchaseCreate = asyncHandler(async (req, res) => {
   let {
     projectsId,
     ClientId,
+    CostEstimatesId,
     Status,
     ReceivedDate,
     Amount
@@ -56,6 +57,33 @@ const ReceivablePurchaseCreate = asyncHandler(async (req, res) => {
       });
     }
 
+    if (typeof CostEstimatesId === "string") {
+      try {
+        CostEstimatesId = JSON.parse(CostEstimatesId);
+      } catch (err) {
+        return res.status(400).json({
+          success: false,
+          message: "Invalid CostEstimatesId format",
+        });
+      }
+    }
+
+    if (!CostEstimatesId || !Array.isArray(CostEstimatesId)) {
+      return res.status(400).json({
+        success: false,
+        message: "CostEstimatesId is required and should be an array"
+      });
+    }
+
+    const costEstimates = await CostEstimates.find({ _id: { $in: CostEstimatesId } });
+    if (costEstimates.length !== CostEstimatesId.length) {
+      return res.status(404).json({
+        success: false,
+        message: "One or more Cost Estimates not found."
+      });
+    }
+
+    // Image upload handling (agar koi file aaye toh)
     let imageUrls = [];
     if (req.files && req.files.image) {
       const files = Array.isArray(req.files.image) ? req.files.image : [req.files.image];
@@ -74,10 +102,13 @@ const ReceivablePurchaseCreate = asyncHandler(async (req, res) => {
       }
     }
 
+    const PONumber = await ReceivablePurchaseNo();
     const newReceivablePurchase = new ReceivablePurchase({
       projectId: projectsId,
+      CostEstimatesId,
       ClientId,
       ReceivedDate,
+      PONumber,
       Status,
       Amount,
       image: imageUrls,
@@ -118,6 +149,11 @@ const AllReceivablePurchase = asyncHandler(async (req, res) => {
         path: 'ClientId',
         select: '_id clientName',
         model: 'ClientManagement'
+      })
+      .populate({
+        path: 'CostEstimatesId',
+        select: '_id estimateRef',
+        model: 'CostEstimates'
       });
 
     if (!allReceivablePurchases || allReceivablePurchases.length === 0) {
@@ -143,7 +179,13 @@ const AllReceivablePurchase = asyncHandler(async (req, res) => {
               clientId: purchaseObj.ClientId._id,
               clientName: purchaseObj.ClientId.clientName
             }
-          : null
+          : null,
+        costEstimates: Array.isArray(purchaseObj.CostEstimatesId)
+          ? purchaseObj.CostEstimatesId.map(ce => ({
+              costEstimateId: ce?._id,
+              estimateRef: ce?.estimateRef
+            }))
+          : [],
       };
     });
 
@@ -161,8 +203,6 @@ const AllReceivablePurchase = asyncHandler(async (req, res) => {
     });
   }
 });
-
-
 
 
 //GET SINGLE DeleteProjects

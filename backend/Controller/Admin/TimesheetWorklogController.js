@@ -12,85 +12,6 @@ cloudinary.config({
   api_secret: 'p12EKWICdyHWx8LcihuWYqIruWQ'
 });
 
-// const TimesheetWorklogCreate = asyncHandler(async (req, res) => {
-
-//     const {
-//         projectId,
-//         jobId,
-//         date,
-//         startTime,
-//         endTime,
-//         hours,
-//         taskDescription,
-//         status,
-//         tags
-//     } = req.body;
-
-//     try {
-//         // Validate project IDs
-//         if (!Array.isArray(projectId) || projectId.some(id => !mongoose.Types.ObjectId.isValid(id))) {
-//             return res.status(400).json({
-//                 success: false,
-//                 message: "Invalid Project ID format. Ensure all IDs are valid."
-//             });
-//         }
-
-//         // Validate jobId array
-//         if (!Array.isArray(jobId) || jobId.length === 0 || jobId.some(id => !mongoose.Types.ObjectId.isValid(id))) {
-//             return res.status(400).json({
-//                 success: false,
-//                 message: "Invalid Job ID format. Ensure all IDs are valid."
-//             });
-//         }
-
-//         // Check if all projects exist
-//         const projects = await Projects.find({ '_id': { $in: projectId } });
-//         if (projects.length !== projectId.length) {
-//             return res.status(404).json({
-//                 success: false,
-//                 message: "One or more projects not found"
-//             });
-//         }
-
-//         // Check if job exists (using first jobId only)
-//         const job = await Jobs.findById(jobId[0]);
-//         if (!job) {
-//             return res.status(404).json({
-//                 success: false,
-//                 message: "Job not found"
-//             });
-//         }
-
-//         // Create the new TimeLog
-//         const newTimesheetWorklog = new TimesheetWorklogs({
-//             projectId: projectId,
-//             jobId: jobId[0],  
-//             date,
-//             startTime,
-//             endTime,
-//             hours,
-//             taskDescription,
-//             status,
-//             tags
-//         });
-
-//         await newTimesheetWorklog.save();
-
-//         res.status(201).json({
-//             success: true,
-//             message: "TimeLog created successfully",
-//             TimesheetWorklog: newTimesheetWorklog.toObject(),
-//         });
-//     } catch (error) {
-//         res.status(500).json({
-//             success: false,
-//             message: "An error occurred while creating the TimeLog",
-//             error: error.message,
-//         });
-//     }
-// });
-
-// Helper: Convert 12-hour format (e.g., "02:30 PM") to 24-hour format (e.g., "14:30")
 function convertTo24Hour(timeStr) {
   const [time, modifier] = timeStr.trim().split(" ");
   let [hours, minutes] = time.split(":").map(Number);
@@ -135,15 +56,15 @@ const TimesheetWorklogCreate = asyncHandler(async (req, res) => {
       });
     }
 
-        // Validate EmployeeId array
-        // ✅ Validate Employee ID array
-        if (!Array.isArray(employeeId) || employeeId.length === 0 || employeeId.some(id => !mongoose.Types.ObjectId.isValid(id))) {
-          return res.status(400).json({
-            success: false,
-            message: "Invalid Employee ID format. Ensure all IDs are valid."
-          });
-        }
-    
+    // Validate EmployeeId array
+    // ✅ Validate Employee ID array
+    if (!Array.isArray(employeeId) || employeeId.length === 0 || employeeId.some(id => !mongoose.Types.ObjectId.isValid(id))) {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid Employee ID format. Ensure all IDs are valid."
+      });
+    }
+
 
     // Check if all projects exist
     const projects = await Projects.find({ '_id': { $in: projectId } });
@@ -163,7 +84,7 @@ const TimesheetWorklogCreate = asyncHandler(async (req, res) => {
       });
     }
 
-     // Validate EmployeeId array
+    // Validate EmployeeId array
     // ✅ Find employee in User table
     const employeeUser = await User.findOne({ _id: employeeId[0], role: "employee" });
     if (!employeeUser) {
@@ -196,21 +117,21 @@ const TimesheetWorklogCreate = asyncHandler(async (req, res) => {
       });
     }
 
-   const milliseconds = end - start;
-const totalMinutes = Math.floor(milliseconds / (1000 * 60));
-const hours = +(totalMinutes / 60).toFixed(2);
-const durationReadable = `${Math.floor(totalMinutes / 60)} hours ${totalMinutes % 60} minutes`;
+    const milliseconds = end - start;
+    const totalMinutes = Math.floor(milliseconds / (1000 * 60));
+    const hours = +(totalMinutes / 60).toFixed(2);
+    const durationReadable = `${Math.floor(totalMinutes / 60)}:${totalMinutes % 60}`;
 
 
     // Create the new TimeLog
     const newTimesheetWorklog = new TimesheetWorklogs({
       projectId,
       jobId: jobId[0],
-       employeeId: employeeUser._id,
+      employeeId: employeeUser._id,
       date,
       startTime,
       endTime,
-      hours:durationReadable,
+      hours: durationReadable,
       taskDescription,
       status,
       tags
@@ -235,10 +156,7 @@ const durationReadable = `${Math.floor(totalMinutes / 60)} hours ${totalMinutes 
 
 
 
-
-//GET SINGLE AllTimesheetWorklog
-//METHOD:GET
-const AllTimesheetWorklog = async (req, res) => {
+const getAllTimesheetWorklogs = asyncHandler(async (req, res) => {
   try {
     const allTimesheetWorklogs = await TimesheetWorklogs.find()
       .populate({
@@ -248,49 +166,71 @@ const AllTimesheetWorklog = async (req, res) => {
       })
       .populate({
         path: 'jobId',
-        select: '_id jobName',
+        select: '_id JobNo',
         model: 'Jobs',
+      })
+      .populate({
+        path: 'employeeId',
+        select: '_id firstName lastName',
+        model: 'User',
       });
 
     if (!allTimesheetWorklogs || allTimesheetWorklogs.length === 0) {
-      return res.status(404).json({ success: false, message: "No TimesheetWorklogs found" });
+      return res.status(404).json({ success: false, message: "No timesheet worklogs found" });
     }
 
-    const TimesheetWorklogsWithDetails = allTimesheetWorklogs.map(TimesheetWorklog => {
-      const TimesheetWorklogObj = TimesheetWorklog.toObject();
+    const allTimesheetWorkWithDetails = allTimesheetWorklogs.map(worklog => {
+      const worklogObj = worklog.toObject();
 
       return {
-        ...TimesheetWorklogObj,
-        projects: Array.isArray(TimesheetWorklog.projectId)
-          ? TimesheetWorklog.projectId.map(project => ({
-            projectId: project?._id,
-            projectName: project?.projectName,
-          }))
+        ...worklogObj,
+
+        projects: Array.isArray(worklog.projectId)
+          ? worklog.projectId.map(project => ({
+              projectId: project?._id,
+              projectName: project?.projectName,
+            }))
+          : worklog.projectId
+          ? [{
+              projectId: worklog.projectId._id,
+              projectName: worklog.projectId.projectName,
+            }]
           : [],
-        jobs: Array.isArray(TimesheetWorklog.jobId)
-          ? TimesheetWorklog.jobId.map(job => ({
-            jobId: job?._id,
-            jobName: job?.jobName,
-          }))
+
+        jobs: Array.isArray(worklog.jobId)
+          ? worklog.jobId.map(job => ({
+              jobId: job?._id,
+              jobName: job?.jobName,
+            }))
+          : worklog.jobId
+          ? [{
+              jobId: worklog.jobId._id,
+              jobName: worklog.jobId.jobName,
+            }]
           : [],
+
+        employee: worklog.employeeId
+          ? {
+              employeeId: worklog.employeeId._id,
+              name: worklog.employeeId.name,
+            }
+          : null,
       };
     });
 
     res.status(200).json({
       success: true,
-      TimesheetWorklogs: TimesheetWorklogsWithDetails,
+      TimesheetWorklogss: allTimesheetWorkWithDetails,
     });
-
   } catch (error) {
-    console.error("Error fetching TimesheetWorklogs:", error);
+    console.error("Error fetching timesheet worklogs:", error);
     res.status(500).json({
       success: false,
-      message: "An error occurred while fetching TimesheetWorklogs",
+      message: "An error occurred while fetching timesheet worklogs",
       error: error.message,
     });
   }
-};
-
+});
 
 
 
@@ -361,4 +301,4 @@ const UpdateTimesheetWorklog = async (req, res) => {
 // }
 
 
-module.exports = { TimesheetWorklogCreate, AllTimesheetWorklog, deleteTimesheetWorklog, UpdateTimesheetWorklog };
+module.exports = { TimesheetWorklogCreate, getAllTimesheetWorklogs, deleteTimesheetWorklog, UpdateTimesheetWorklog };

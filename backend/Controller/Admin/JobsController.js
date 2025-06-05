@@ -3,7 +3,7 @@ const Jobs = require('../../Model/Admin/JobsModel');
 const Projects = require("../../Model/Admin/ProjectsModel");
 const cloudinary = require('../../Config/cloudinary');
 const mongoose = require("mongoose")
-const {generateJobsNo} = require('../../middlewares/generateEstimateRef');
+const { generateJobsNo } = require('../../middlewares/generateEstimateRef');
 
 cloudinary.config({
   cloud_name: 'dkqcqrrbp',
@@ -43,7 +43,7 @@ const jobCreate = asyncHandler(async (req, res) => {
         message: "One or more projects not found"
       });
     }
-         const JobNo = await generateJobsNo();
+    const JobNo = await generateJobsNo();
     // Create the new Job
     const newJob = new Jobs({
       projectId: projectsId,
@@ -102,9 +102,9 @@ const AllJobID = async (req, res) => {
       ...job.toObject(),
       projects: job.projectId
         ? {
-            projectId: job.projectId._id,
-            projectName: job.projectId.projectName,
-          }
+          projectId: job.projectId._id,
+          projectName: job.projectId.projectName,
+        }
         : {},
     }));
 
@@ -128,7 +128,7 @@ const AllJobID = async (req, res) => {
 const AllJob = async (req, res) => {
   try {
     const allJobs = await Jobs.find().populate({
-      path: 'projectId', 
+      path: 'projectId',
       select: '_id projectName',
       model: 'Projects'
     });
@@ -168,13 +168,13 @@ const AllJob = async (req, res) => {
 // GET All Jobs with project and client info
 const filter = async (req, res) => {
   try {
-  const {Status} = req.params 
-    const allJobs = await Jobs.find({Status:Status}).populate({
-      path: 'projectId', 
+    const { Status } = req.params
+    const allJobs = await Jobs.find({ Status: Status }).populate({
+      path: 'projectId',
       select: '_id projectName',
       model: 'Projects'
     });
-    
+
     if (!allJobs || allJobs.length === 0) {
       return res.status(404).json({ success: false, message: "No jobs found" });
     }
@@ -330,4 +330,4 @@ const SingleJob = async (req, res) => {
 }
 
 
-module.exports = { jobCreate, AllJob, deleteJob, UpdateJob, SingleJob, UpdateJobAssign, AllJobID ,filter};
+module.exports = { jobCreate, AllJob, deleteJob, UpdateJob, SingleJob, UpdateJobAssign, AllJobID, filter };

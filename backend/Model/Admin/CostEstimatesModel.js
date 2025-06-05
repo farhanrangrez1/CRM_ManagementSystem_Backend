@@ -4,71 +4,70 @@ const Projects = require("./ProjectsModel");
 const ClientManagement = require("./ClientManagementModel");
 
 const CostEstimatesSchema = new mongoose.Schema({
-      projectId:[ {
-           type: mongoose.Schema.Types.ObjectId,
-           ref: 'Projects',
-           required: true,
-       }],
-         clientId: {
-           type: mongoose.Schema.Types.ObjectId,    //id client
-           ref: 'ClientManagement',
-           required: true,
-         },
-       estimateDate:{
+    projectId: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Projects',
+        required: true,
+    }],
+clientId: [{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'ClientManagement',
+    required: true,
+}],
+
+    estimateDate: {
         type: Date,
         required: true,
-       },
-       validUntil:{
+    },
+    validUntil: {
         type: Date,
         required: true,
-       },
-       currency:{
-        type: String,
-        required: true,
-       },
-       estimateRef: {
-  type: String,
-  required: true,
-  unique: true
-},
-
-
-   lineItems:[{
-    description:{
+    },
+    currency: {
         type: String,
         required: true,
     },
-    quantity:{
+    estimateRef: {
+        type: String,
+        required: true,
+        unique: true
+    },
+    lineItems: [{
+        description: {
+            type: String,
+            required: true,
+        },
+        quantity: {
+            type: Number,
+            required: true,
+        },
+        rate: {
+            type: Number,
+            required: true,
+        },
+        amount: {
+            type: Number,
+            required: true,
+        },
+        _id: false,
+    }],
+    VATRate: {
         type: Number,
         required: true,
     },
-    rate:{
-        type: Number,
+    Notes: {
+        type: String,
         required: true,
     },
-    amount:{
-        type: Number,
+    POStatus: {
+        type: String,
         required: true,
     },
-    _id:false,
-   }],
-   VATRate: {
-       type: Number,
-       required: true,
-   },
-   Notes:{
-       type: String,
-       required: true,
-   },
-   POStatus:{
-       type: String,
-       required: true,
-   },
-   Status:{
-       type: String,
-       required: true,
-   },
-},{
+    Status: {
+        type: String,
+        required: true,
+    },
+}, {
     timestamps: true,
 });
 

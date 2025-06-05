@@ -963,3 +963,203 @@ const TimesheetWorklogCreate = asyncHandler(async (req, res) => {
     });
   }
 });
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// const TimesheetWorklogCreate = asyncHandler(async (req, res) => {
+
+//     const {
+//         projectId,
+//         jobId,
+//         date,
+//         startTime,
+//         endTime,
+//         hours,
+//         taskDescription,
+//         status,
+//         tags
+//     } = req.body;
+
+//     try {
+//         // Validate project IDs
+//         if (!Array.isArray(projectId) || projectId.some(id => !mongoose.Types.ObjectId.isValid(id))) {
+//             return res.status(400).json({
+//                 success: false,
+//                 message: "Invalid Project ID format. Ensure all IDs are valid."
+//             });
+//         }
+
+//         // Validate jobId array
+//         if (!Array.isArray(jobId) || jobId.length === 0 || jobId.some(id => !mongoose.Types.ObjectId.isValid(id))) {
+//             return res.status(400).json({
+//                 success: false,
+//                 message: "Invalid Job ID format. Ensure all IDs are valid."
+//             });
+//         }
+
+//         // Check if all projects exist
+//         const projects = await Projects.find({ '_id': { $in: projectId } });
+//         if (projects.length !== projectId.length) {
+//             return res.status(404).json({
+//                 success: false,
+//                 message: "One or more projects not found"
+//             });
+//         }
+
+//         // Check if job exists (using first jobId only)
+//         const job = await Jobs.findById(jobId[0]);
+//         if (!job) {
+//             return res.status(404).json({
+//                 success: false,
+//                 message: "Job not found"
+//             });
+//         }
+
+//         // Create the new TimeLog
+//         const newTimesheetWorklog = new TimesheetWorklogs({
+//             projectId: projectId,
+//             jobId: jobId[0],  
+//             date,
+//             startTime,
+//             endTime,
+//             hours,
+//             taskDescription,
+//             status,
+//             tags
+//         });
+
+//         await newTimesheetWorklog.save();
+
+//         res.status(201).json({
+//             success: true,
+//             message: "TimeLog created successfully",
+//             TimesheetWorklog: newTimesheetWorklog.toObject(),
+//         });
+//     } catch (error) {
+//         res.status(500).json({
+//             success: false,
+//             message: "An error occurred while creating the TimeLog",
+//             error: error.message,
+//         });
+//     }
+// });
+
+// Helper: Convert 12-hour format (e.g., "02:30 PM") to 24-hour format (e.g., "14:30")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+const asyncHandler = require('express-async-handler');
+const CostEstimates = require('../../Model/Admin/CostEstimatesModel');
+const Projects = require("../../Model/Admin/ProjectsModel");
+const ClientManagement = require("../../Model/Admin/ClientManagementModel");
+const cloudinary = require('../../Config/cloudinary');
+
+const mongoose = require("mongoose");
+
+cloudinary.config({
+  cloud_name: 'dkqcqrrbp',
+  api_key: '418838712271323',
+  api_secret: 'p12EKWICdyHWx8LcihuWYqIruWQ'
+});
+const costEstimatesCreate = asyncHandler(async (req, res) => {
+  const {
+    projectsId,
+    clientId,
+    estimateDate,
+    validUntil,
+    currency,
+    lineItems,
+    VATRate,
+    Notes,
+    POStatus,
+    Status
+  } = req.body;
+
+  try {
+if (!Array.isArray(projectsId) || projectsId.some(id => !mongoose.Types.ObjectId.isValid(id))) {
+  return res.status(400).json({ success: false, message: "Invalid Project ID format." });
+}
+
+
+    if (!mongoose.Types.ObjectId.isValid(clientId)) {
+      return res.status(400).json({ success: false, message: "Invalid Client ID format." });
+    }
+
+    const projects = await Projects.find({ '_id': { $in: projectsId } });
+    if (projects.length !== projectsId.length) {
+      return res.status(404).json({ success: false, message: "One or more projects not found" });
+    }
+
+    const client = await ClientManagement.findById(clientId);
+    if (!client) {
+      return res.status(404).json({ success: false, message: "Client not found" });
+    }
+
+    const newCostEstimate = new CostEstimates({
+      projectId: projectsId,
+      clientId,
+      estimateDate,
+      validUntil,
+      currency,
+      lineItems,
+      VATRate,
+      Notes,
+      POStatus,
+      Status,
+      estimateRef 
+    });
+
+    await newCostEstimate.save();
+
+    res.status(201).json({
+      success: true,
+      message: "Cost Estimate created successfully",
+      costEstimate: newCostEstimate,
+    });
+
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: "An error occurred while creating the Cost Estimate",
+      error: error.message,
+    });
+  }
+});

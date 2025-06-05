@@ -14,6 +14,16 @@ const ReceivablePurchaseSchema = new mongoose.Schema({
         ref: 'ClientManagement',
         required: true
     }],
+    CostEstimatesId :[{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'CostEstimates',
+        required: true
+    }],
+    PONumber: {
+        type: String,
+        required: true,
+        unique: true
+    },
     Status: {
         type: String,
         required: true,

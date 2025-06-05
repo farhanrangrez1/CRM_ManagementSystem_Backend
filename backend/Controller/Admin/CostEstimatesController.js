@@ -3,7 +3,7 @@ const CostEstimates = require('../../Model/Admin/CostEstimatesModel');
 const Projects = require("../../Model/Admin/ProjectsModel");
 const ClientManagement = require("../../Model/Admin/ClientManagementModel");
 const cloudinary = require('../../Config/cloudinary');
-const generateEstimateRef = require('../../middlewares/generateEstimateRef');
+const { generateEstimateNo } = require('../../middlewares/generateEstimateRef');
 const mongoose = require("mongoose");
 
 cloudinary.config({
@@ -26,12 +26,11 @@ const costEstimatesCreate = asyncHandler(async (req, res) => {
   } = req.body;
 
   try {
-if (!Array.isArray(projectsId) || projectsId.some(id => !mongoose.Types.ObjectId.isValid(id))) {
-  return res.status(400).json({ success: false, message: "Invalid Project ID format." });
-}
+    if (!Array.isArray(projectsId) || projectsId.some(id => !mongoose.Types.ObjectId.isValid(id))) {
+      return res.status(400).json({ success: false, message: "Invalid Project ID format." });
+    }
 
-
-    if (!mongoose.Types.ObjectId.isValid(clientId)) {
+    if (!Array.isArray(clientId) || clientId.some(id => !mongoose.Types.ObjectId.isValid(id))) {
       return res.status(400).json({ success: false, message: "Invalid Client ID format." });
     }
 
@@ -40,17 +39,17 @@ if (!Array.isArray(projectsId) || projectsId.some(id => !mongoose.Types.ObjectId
       return res.status(404).json({ success: false, message: "One or more projects not found" });
     }
 
-    const client = await ClientManagement.findById(clientId);
-    if (!client) {
-      return res.status(404).json({ success: false, message: "Client not found" });
+    const clients = await ClientManagement.find({ '_id': { $in: clientId } });
+    if (clients.length !== clientId.length) {
+      return res.status(404).json({ success: false, message: "One or more clients not found" });
     }
 
-    const estimateRef = await generateEstimateRef();
+    const estimateRef = await generateEstimateNo();
 
     const newCostEstimate = new CostEstimates({
       estimateRef,
       projectId: projectsId,
-      clientId,
+      clientId, // already an array
       estimateDate,
       validUntil,
       currency,
@@ -77,6 +76,7 @@ if (!Array.isArray(projectsId) || projectsId.some(id => !mongoose.Types.ObjectId
     });
   }
 });
+
 
 
 // GET All Cost Estimates with project and client info

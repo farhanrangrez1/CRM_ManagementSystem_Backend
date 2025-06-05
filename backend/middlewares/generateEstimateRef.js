@@ -1,13 +1,12 @@
 const CostEstimates = require('../Model/Admin/CostEstimatesModel'); // Path ko adjust karein agar model ka path alag hai
 const Projects = require("../Model/Admin/ProjectsModel");
 const Jobs = require('../Model/Admin/JobsModel');
+const ReceivablePurchase = require('../Model/Admin/ReceivablePurchaseModel');
 
-const generateEstimateRef = async () => {
+const generateEstimateNo = async () => {
   const currentYear = new Date().getFullYear();
   // Find last estimate of this year
-  const lastEstimate = await CostEstimates
-    .findOne({ estimateRef: { $regex: `^EST-${currentYear}-` } })
-    .sort({ createdAt: -1 });
+  const lastEstimate = await CostEstimates.findOne({ estimateRef: { $regex: `^EST-${currentYear}-` } }).sort({ createdAt: -1 });
 
   let lastNumber = 0;
 
@@ -48,7 +47,6 @@ const generateEstimateRef = async () => {
 
 
 const generateProjectNo = async () => {
-  // Find the last project with a 4-digit number format
   const lastProject = await Projects.findOne({
     projectNo: { $regex: /^\d{4}$/ }
   }).sort({ createdAt: -1 });
@@ -61,7 +59,7 @@ const generateProjectNo = async () => {
 
   const newNumber = (lastNumber + 1).toString().padStart(4, '0');
 
-  return newNumber; // e.g. '0001', '0002'
+  return newNumber; 
 };
 
 const generateJobsNo = async () => {
@@ -80,4 +78,23 @@ const generateJobsNo = async () => {
 };
 
 
-module.exports = {generateEstimateRef,generateProjectNo,generateJobsNo};
+const ReceivablePurchaseNo = async () => {
+  const lastEntry = await ReceivablePurchase.findOne({
+    PONumber: { $regex: /^PO-\d{4}$/ }
+  }).sort({ createdAt: -1 });
+
+  let lastNumber = 0;
+
+  if (lastEntry && lastEntry.PONumber) {
+    const match = lastEntry.PONumber.match(/^PO-(\d{4})$/);
+    if (match) {
+      lastNumber = parseInt(match[1], 10);
+    }
+  }
+
+  const newNumber = (lastNumber + 1).toString().padStart(4, '0');
+  return `PO-${newNumber}`; // e.g. PO-0002, PO-0003
+};
+
+module.exports = { generateEstimateNo, generateProjectNo, generateJobsNo,ReceivablePurchaseNo };
+
