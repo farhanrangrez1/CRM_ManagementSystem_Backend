@@ -4,7 +4,7 @@ const jwt = require('jsonwebtoken');
 const User = require('../Model/userModel');
 const cloudinary = require('../Config/cloudinary');
 const nodemailer = require('nodemailer');
-
+const {encodeToken} = require ("../middlewares/decodeToken")
 // Cloudinary config
 cloudinary.config({
     cloud_name: 'dkqcqrrbp',
@@ -101,6 +101,8 @@ const loginUser = async (req, res) => {
         }
 
         const token = genretToken(user._id);
+        const decodeTokens=encodeToken(token)
+        console.log("decodeToken",decodeTokens  )
         user.password = undefined;
 
         res.status(200).json({

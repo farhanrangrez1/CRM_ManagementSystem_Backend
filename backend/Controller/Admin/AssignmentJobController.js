@@ -304,7 +304,7 @@ const AssignmentCreate = asyncHandler(async (req, res) => {
         // Return message with employee details
         return res.status(200).json({
             success: false,
-            message: `Job already assigned to another employee: ${employeeName}.`
+            message: `Job already assigned : ${employeeName}.`
         });
     } else {
         // Find existing assignment for the given employeeId
@@ -362,7 +362,6 @@ const AssignmentCreate = asyncHandler(async (req, res) => {
 //GET SINGLE ProjectsUpdate
 //METHOD:PUT
 // GET /api/assignments/by-employee/:employeeId
-
 const AllAssignJobID = asyncHandler(async (req, res) => {
     const { employeeId } = req.params;
 
@@ -371,8 +370,14 @@ const AllAssignJobID = asyncHandler(async (req, res) => {
     }
 
     const assignments = await Assignment.find({ employeeId: employeeId })
-        .populate('employeeId')   // get employee details
-        .populate('jobId');       // get job details
+        .populate('employeeId') // populate employee details
+        .populate({
+            path: 'jobId',
+            populate: {
+                path: 'projectId', // assuming Job has a field called projectId
+                select: 'projectName' // only return projectName
+            }
+        });
 
     if (!assignments || assignments.length === 0) {
         return res.status(404).json({ message: 'No assignments found for this employee' });
@@ -384,6 +389,7 @@ const AllAssignJobID = asyncHandler(async (req, res) => {
         assignments,
     });
 });
+
 
 
 // const AllAssignJobID = asyncHandler(async (req, res) => {
