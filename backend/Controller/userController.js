@@ -28,12 +28,12 @@ const createUser = async (req, res) => {
         const requiredFields = { firstName, lastName, email, password, passwordConfirm, phone, role, state, country,assign };
         for (const [key, value] of Object.entries(requiredFields)) {
             if (!value || value.toString().trim() === '') {
-                return res.status(400).json({ status: 'fail', message: `${key} is required` });
+                return res.status(400).json({ status: false, message: `${key} is required` });
             }
         }
 
         if (password !== passwordConfirm) {
-            return res.status(400).json({ status: 'fail', message: 'Passwords do not match' });
+            return res.status(400).json({ status: false, message: 'Passwords do not match' });
         }
 
         const existingUser = await User.findOne({ email });
@@ -77,7 +77,7 @@ const createUser = async (req, res) => {
             data: { user: newUser, token }
         });
     } catch (err) {
-        res.status(400).json({ status: 'fail', message: err.message });
+        res.status(400).json({ status: false, message: err.message });
     }
 };
 
@@ -87,28 +87,28 @@ const loginUser = async (req, res) => {
         const { email, password } = req.body;
 
         if (!email || !password) {
-            return res.status(400).json({ status: 'fail', message: 'Email and password are required' });
+            return res.status(400).json({ status: false, message: 'Email and password are required' });
         }
 
         const user = await User.findOne({ email });
         if (!user) {
-            return res.status(401).json({ status: 'fail', message: 'Invalid email or password' });
+            return res.status(401).json({ status: false, message: 'Invalid email or password' });
         }
 
         const isMatch = await bcrypt.compare(password, user.password);
         if (!isMatch) {
-            return res.status(401).json({ status: 'fail', message: 'Invalid email or password' });
+            return res.status(401).json({ status: false, message: 'Invalid email or password' });
         }
 
-        const token = genretToken(user._id);
-        const decodeTokens=encodeToken(token)
-        console.log("decodeToken",decodeTokens  )
+        const token = await genretToken(user._id);
+        console.log(token)
+        const encodeTokens= await encodeToken(token)
         user.password = undefined;
 
         res.status(200).json({
             status: 'success',
             message: 'Login successful',
-            token,
+            token:encodeTokens,
             user
         });
 
@@ -203,7 +203,7 @@ const getAllUsers = async (req, res) => {
             data: { users }
         });
     } catch (err) {
-        res.status(400).json({ status: 'fail', message: err.message });
+        res.status(400).json({ status: false, message: err.message });
     }
 };
 
