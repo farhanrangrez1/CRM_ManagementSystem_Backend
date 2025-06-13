@@ -23,4 +23,8 @@ routerapi.use('/api/invoicingBilling', require('./Router/Admin/InvoicingBillingR
 // AssignmentJob
 routerapi.use('/api/AssignmentJob', require('./Router/Admin/AssignmentJobControllerRouter'));
 
+
+// /////Employee
+routerapi.use('/api/employee/dashboard',require('./Router/Employee/DashboardRouter'));
+
 module.exports = routerapi
