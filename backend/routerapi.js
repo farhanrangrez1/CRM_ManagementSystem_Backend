@@ -22,7 +22,8 @@ routerapi.use('/api/timesheetWorklog', require('./Router/Admin/TimesheetWorklogR
 routerapi.use('/api/invoicingBilling', require('./Router/Admin/InvoicingBillingRouter'));
 // AssignmentJob
 routerapi.use('/api/AssignmentJob', require('./Router/Admin/AssignmentJobControllerRouter'));
-
+// ReportsAnalyticsController
+routerapi.use('/api/ReportsAnalytics', require('./Router/Admin/ReportsAnalyticsrRouter'));
 
 // /////Employee
 routerapi.use('/api/employee/dashboard',require('./Router/Employee/DashboardRouter'));
