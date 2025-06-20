@@ -139,7 +139,7 @@ const sendEmail = async (options) => {
         <h2>Password Reset Request</h2>
         <p>Hi,</p>
         <p>We received a request to reset your password. Please click the button below to reset your password:</p>
-        <a href="https://construction-mngmt.netlify.app/resetpassword?token=${options.resetToken}" 
+        <a href="https://saaranik-api.netlify.app/resetPassword?token=${options.resetToken}" 
            style="display: inline-block; padding: 10px 20px; background-color: #007bff; color: #fff; text-decoration: none; border-radius: 5px;">
           Reset Password
         </a>
