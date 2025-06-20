@@ -25,7 +25,6 @@ function convertTo24Hour(timeStr) {
   return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}`;
 }
 
-
 const TimesheetWorklogCreate = asyncHandler(async (req, res) => {
   const {
     projectId,
