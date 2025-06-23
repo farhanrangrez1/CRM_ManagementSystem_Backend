@@ -1,6 +1,7 @@
 const asyncHandler = require('express-async-handler');
 const Jobs = require('../../Model/Admin/JobsModel');
 const Projects = require("../../Model/Admin/ProjectsModel");
+const Assignment = require("../../Model/Admin/AssignmentJobControllerModel");
 const cloudinary = require('../../Config/cloudinary');
 const mongoose = require("mongoose")
 const { generateJobsNo } = require('../../middlewares/generateEstimateRef');
@@ -80,6 +81,49 @@ const jobCreate = asyncHandler(async (req, res) => {
   }
 });
 
+// const AllJobID = async (req, res) => {
+//   try {
+//     const { projectId } = req.params;
+
+//     if (!mongoose.Types.ObjectId.isValid(projectId)) {
+//       return res.status(400).json({
+//         success: false,
+//         message: "Invalid projectId",
+//       });
+//     }
+
+//     const allJobs = await Jobs.find({ projectId })
+//       .populate({
+//         path: 'projectId',
+//         select: '_id projectName',
+//         model: 'Projects',
+//       });
+
+//     const jobsWithDetails = allJobs.map(job => ({
+//       ...job.toObject(),
+//       projects: job.projectId
+//         ? {
+//           projectId: job.projectId._id,
+//           projectName: job.projectId.projectName,
+//         }
+//         : {},
+//     }));
+
+//     res.status(200).json({
+//       success: true,
+//       jobs: jobsWithDetails,
+//     });
+//   } catch (error) {
+//     console.error("Error fetching jobs:", error);
+//     res.status(500).json({
+//       success: false,
+//       message: "An error occurred while fetching jobs",
+//       error: error.message,
+//     });
+//   }
+// };
+
+
 const AllJobID = async (req, res) => {
   try {
     const { projectId } = req.params;
@@ -98,19 +142,36 @@ const AllJobID = async (req, res) => {
         model: 'Projects',
       });
 
-    const jobsWithDetails = allJobs.map(job => ({
-      ...job.toObject(),
-      projects: job.projectId
-        ? {
-          projectId: job.projectId._id,
-          projectName: job.projectId.projectName,
-        }
-        : {},
+    // Now for each job, check assignment
+    const jobsWithDetails = await Promise.all(allJobs.map(async (job) => {
+      // Find assignment for this job
+      const assignment = await Assignment.findOne({ jobId: job._id })
+        .populate({
+          path: 'employeeId',
+          select: 'firstName lastName',
+        });
+
+      // Prepare assigned name
+      let assignedTo = "Not Assigned";
+      if (assignment && assignment.employeeId) {
+        assignedTo = `${assignment.employeeId.firstName} ${assignment.employeeId.lastName}`;
+      }
+
+      return {
+        ...job.toObject(),
+        projects: job.projectId
+          ? {
+              projectId: job.projectId._id,
+              projectName: job.projectId.projectName,
+            }
+          : {},
+        assignedTo,   // 👈 Add assignedTo field
+      };
     }));
 
     res.status(200).json({
       success: true,
-      jobs: jobsWithDetails, // will be [] if no jobs found
+      jobs: jobsWithDetails,
     });
   } catch (error) {
     console.error("Error fetching jobs:", error);
@@ -121,6 +182,8 @@ const AllJobID = async (req, res) => {
     });
   }
 };
+
+
 
 //GET SINGLE AllProjects
 //METHOD:GET
@@ -132,25 +195,47 @@ const AllJob = async (req, res) => {
       select: '_id projectName',
       model: 'Projects'
     });
+
     if (!allJobs || allJobs.length === 0) {
       return res.status(404).json({ success: false, message: "No jobs found" });
     }
-    const jobsWithDetails = allJobs.map(job => {
+
+    const jobsWithDetails = await Promise.all(allJobs.map(async (job) => {
       const jobObj = job.toObject();
+
+      // Check assignment for this job
+      const assignment = await Assignment.findOne({ jobId: job._id })
+        .populate({
+          path: 'employeeId',
+          select: 'firstName lastName',
+        });
+
+      // Prepare assignedTo name
+      let assignedTo = "Not Assigned";
+      if (assignment && assignment.employeeId) {
+        assignedTo = `${assignment.employeeId.firstName} ${assignment.employeeId.lastName}`;
+      }
+
       return {
         ...jobObj,
         projects: Array.isArray(job.projectId)
           ? job.projectId.map(project => ({
-            projectId: project?._id,
-            projectName: project?.projectName
-          }))
-          : []
+              projectId: project?._id,
+              projectName: project?.projectName
+            }))
+          : (job.projectId ? {
+              projectId: job.projectId._id,
+              projectName: job.projectId.projectName
+            } : {}),
+        assignedTo  // 👈 add assignedTo here
       };
-    });
+    }));
+
     res.status(200).json({
       success: true,
       jobs: jobsWithDetails,
     });
+
   } catch (error) {
     console.error("Error fetching jobs:", error);
     res.status(500).json({
@@ -163,12 +248,14 @@ const AllJob = async (req, res) => {
 
 
 
+
 //GET SINGLE AllProjects
 //METHOD:GET
 // GET All Jobs with project and client info
 const filter = async (req, res) => {
   try {
-    const { Status } = req.params
+    const { Status } = req.params;
+
     const allJobs = await Jobs.find({ Status: Status }).populate({
       path: 'projectId',
       select: '_id projectName',
@@ -178,22 +265,43 @@ const filter = async (req, res) => {
     if (!allJobs || allJobs.length === 0) {
       return res.status(404).json({ success: false, message: "No jobs found" });
     }
-    const jobsWithDetails = allJobs.map(job => {
+
+    const jobsWithDetails = await Promise.all(allJobs.map(async (job) => {
       const jobObj = job.toObject();
+
+      // Check assignment for this job
+      const assignment = await Assignment.findOne({ jobId: job._id })
+        .populate({
+          path: 'employeeId',
+          select: 'firstName lastName',
+        });
+
+      // Prepare assignedTo name
+      let assignedTo = "Not Assigned";
+      if (assignment && assignment.employeeId) {
+        assignedTo = `${assignment.employeeId.firstName} ${assignment.employeeId.lastName}`;
+      }
+
       return {
         ...jobObj,
         projects: Array.isArray(job.projectId)
           ? job.projectId.map(project => ({
-            projectId: project?._id,
-            projectName: project?.projectName
-          }))
-          : []
+              projectId: project?._id,
+              projectName: project?.projectName
+            }))
+          : (job.projectId ? {
+              projectId: job.projectId._id,
+              projectName: job.projectId.projectName
+            } : {}),
+        assignedTo  // 👈 add assignedTo here
       };
-    });
+    }));
+
     res.status(200).json({
       success: true,
       jobs: jobsWithDetails,
     });
+
   } catch (error) {
     console.error("Error fetching jobs:", error);
     res.status(500).json({
@@ -203,6 +311,7 @@ const filter = async (req, res) => {
     });
   }
 };
+
 
 //GET SINGLE DeleteProjects
 //METHOD:DELETE

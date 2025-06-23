@@ -41,10 +41,7 @@ const ClientManagementSchema = new mongoose.Schema({
     shippingContactName: { type: String, required: true },
     shippingEmail: { type: String, required: true },
     shippingPhone: { type: String, required: true },
-    preferredShippingMethod: {
-      type: String,
-      enum: ['Standard Ground', 'Overnight', 'Express']
-    },
+    preferredShippingMethod:{ type: String, required: true },
     specialInstructions: { type: String, required: true },
     _id:false
   }],

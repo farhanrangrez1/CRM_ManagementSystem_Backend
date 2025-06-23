@@ -257,6 +257,132 @@ const deleteUser = async (req, res) => {
 
 //GET SINGLE UserUpdate
 //METHOD:PUT
+// const UpdateUser = async (req, res) => {
+//   try {
+//     const allowedFields = [
+//       'firstName',
+//       'lastName',
+//       'email',
+//       'phone',
+//       'role',
+//       'state',
+//       'country',
+//       'permissions',
+//       'accessLevel'
+//     ];
+
+//     const updateData = {};
+
+//     // Handle allowed text fields
+//     allowedFields.forEach(field => {
+//       if (req.body[field] !== undefined) {
+//         updateData[field] = req.body[field];
+//       }
+//     });
+
+//     // Handle profileImage if new image is uploaded
+//     if (req.files && req.files.image) {
+//       const result = await cloudinary.uploader.upload(req.files.image.tempFilePath, {
+//         folder: 'user_profiles',
+//         resource_type: 'image',
+//       });
+//       updateData.profileImage = result.secure_url;
+//     }
+
+//     // If no data to update
+//     if (Object.keys(updateData).length === 0) {
+//       return res.status(400).json({ message: 'At least one field must be provided for update' });
+//     }
+
+//     // Update user
+//     const updatedUser = await User.findByIdAndUpdate(
+//       req.params.id,
+//       updateData,
+//       { new: true }
+//     );
+
+//     if (!updatedUser) {
+//       return res.status(404).json({ message: 'User not found' });
+//     }
+
+//     res.status(200).json({
+//       status: 'success',
+//       data: updatedUser
+//     });
+
+//   } catch (error) {
+//     console.error(error);
+//     res.status(500).json({ message: 'Server error', error });
+//   }
+// };
+// const UpdateUser = async (req, res) => {
+//   try {
+//     const allowedFields = [
+//       'firstName',
+//       'lastName',
+//       'email',
+//       'phone',
+//       'role',
+//       'state',
+//       'country',
+//       'permissions',
+//       'accessLevel'
+//     ];
+
+//     const updateData = {};
+
+//     // Handle allowed text fields
+//     allowedFields.forEach(field => {
+//       if (req.body[field] !== undefined) {
+//         // Check if permissions or accessLevel is string, then parse it
+//         if ((field === 'permissions' || field === 'accessLevel') && typeof req.body[field] === 'string') {
+//           try {
+//             updateData[field] = JSON.parse(req.body[field]);
+//           } catch (err) {
+//             console.warn(`Failed to parse ${field}:`, req.body[field]);
+//             updateData[field] = req.body[field]; // fallback: keep as is
+//           }
+//         } else {
+//           updateData[field] = req.body[field];
+//         }
+//       }
+//     });
+
+//     // Handle profileImage if new image is uploaded
+//     if (req.files && req.files.image) {
+//       const result = await cloudinary.uploader.upload(req.files.image.tempFilePath, {
+//         folder: 'user_profiles',
+//         resource_type: 'image',
+//       });
+//       updateData.profileImage = result.secure_url;
+//     }
+
+//     // If no data to update
+//     if (Object.keys(updateData).length === 0) {
+//       return res.status(400).json({ message: 'At least one field must be provided for update' });
+//     }
+
+//     // Update user
+//     const updatedUser = await User.findByIdAndUpdate(
+//       req.params.id,
+//       updateData,
+//       { new: true }
+//     );
+
+//     if (!updatedUser) {
+//       return res.status(404).json({ message: 'User not found' });
+//     }
+
+//     res.status(200).json({
+//       status: 'success',
+//       data: updatedUser
+//     });
+
+//   } catch (error) {
+//     console.error(error);
+//     res.status(500).json({ message: 'Server error', error });
+//   }
+// };
 const UpdateUser = async (req, res) => {
   try {
     const allowedFields = [
@@ -267,33 +393,75 @@ const UpdateUser = async (req, res) => {
       'role',
       'state',
       'country',
-      'profileImage',
       'permissions',
       'accessLevel'
     ];
+
     const updateData = {};
+
+    // Handle allowed text fields
     allowedFields.forEach(field => {
       if (req.body[field] !== undefined) {
-        updateData[field] = req.body[field];
+        if ((field === 'permissions' || field === 'accessLevel') && typeof req.body[field] === 'string') {
+          try {
+            updateData[field] = JSON.parse(req.body[field]);
+          } catch (err) {
+            console.warn(`Failed to parse ${field}:`, req.body[field]);
+            updateData[field] = req.body[field];
+          }
+        } else {
+          updateData[field] = req.body[field];
+        }
       }
     });
+
+    let imageFile = req.body.profileImage || '';
+    // ✅ Fix: Upload profileImage if available
+    if (req.files && req.files.profileImage) {
+      try {
+        console.log("Image received:", req.files.profileImage); // 👈 Debug log
+        imageFile = req.files.profileImage;
+
+        const uploadResult = await cloudinary.uploader.upload(imageFile.tempFilePath, {
+          folder: 'user_profiles',
+          resource_type: 'image'
+        });
+
+        console.log("Cloudinary upload success:", uploadResult.secure_url); // 👈 Debug log
+        updateData.profileImage = uploadResult.secure_url;
+      } catch (uploadError) {
+        console.error('Image Upload Error:', uploadError);
+        return res.status(500).json({ message: 'Image upload failed', error: uploadError });
+      }
+    } else {
+      console.log("No image file received in request"); // 👈 Debug log
+    }
+
     if (Object.keys(updateData).length === 0) {
       return res.status(400).json({ message: 'At least one field must be provided for update' });
     }
-    const updatedDiary = await User.findByIdAndUpdate(
+
+    const updatedUser = await User.findByIdAndUpdate(
       req.params.id,
       updateData,
       { new: true }
     );
-    if (!updatedDiary) {
-      return res.status(404).json({ message: 'Diary not found' });
+
+    if (!updatedUser) {
+      return res.status(404).json({ message: 'User not found' });
     }
-    res.status(200).json(updatedDiary);
+
+    res.status(200).json({
+      status: 'success',
+      data: updatedUser
+    });
+
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: 'Server error', error });
   }
 };
+
 
 //METHOD:Single
 //TYPE:PUBLIC

@@ -24,6 +24,8 @@ routerapi.use('/api/invoicingBilling', require('./Router/Admin/InvoicingBillingR
 routerapi.use('/api/AssignmentJob', require('./Router/Admin/AssignmentJobControllerRouter'));
 // ReportsAnalyticsController
 routerapi.use('/api/ReportsAnalytics', require('./Router/Admin/ReportsAnalyticsrRouter'));
+// Remove Assign Job
+routerapi.use('/api/Remove', require('./Router/Admin/removeAssignRouter'));
 
 // /////Employee
 routerapi.use('/api/employee/dashboard',require('./Router/Employee/DashboardRouter'));
