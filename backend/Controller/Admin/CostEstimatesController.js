@@ -5,6 +5,7 @@ const ClientManagement = require("../../Model/Admin/ClientManagementModel");
 const cloudinary = require('../../Config/cloudinary');
 const { generateEstimateNo } = require('../../middlewares/generateEstimateRef');
 const mongoose = require("mongoose");
+const ReceivablePurchase = require('../../Model/Admin/ReceivablePurchaseModel');
 
 cloudinary.config({
   cloud_name: 'dkqcqrrbp',
@@ -82,56 +83,106 @@ const costEstimatesCreate = asyncHandler(async (req, res) => {
 // GET All Cost Estimates with project and client info
 const AllCostEstimates = async (req, res) => {
   try {
-    const allCostEstimates = await CostEstimates.find()
-      .populate({
-        path: 'projectId',
-        select: '_id projectName',
-        model: 'Projects'
-      })
-      .populate({
-        path: 'clientId',
-        select: '_id clientName',
-        model: 'ClientManagement'
-      });
+    const allCostEstimates = await CostEstimates.aggregate([
+      // 1) Join Projects
+      {
+        $lookup: {
+          from: 'projects',
+          localField: 'projectId',
+          foreignField: '_id',
+          as: 'projects'
+        }
+      },
+      // 2) Join Clients
+      {
+        $lookup: {
+          from: 'clientmanagements',
+          localField: 'clientId',
+          foreignField: '_id',
+          as: 'clients'
+        }
+      },
+      // 3) Join ReceivablePurchases
+      {
+        $lookup: {
+          from: 'receivablepurchases',
+          localField: '_id',
+          foreignField: 'CostEstimatesId',
+          as: 'receivablePurchases'
+        }
+      },
+      // 4) Project needed fields (this is a new separate stage)
+      {
+        $project: {
+          _id: 1,
+          estimateDate: 1,
+          validUntil: 1,
+          currency: 1,
+          estimateRef: 1,
+          lineItems: 1,
+          VATRate: 1,
+          Notes: 1,
+          Status: 1,
+          createdAt: 1,
+          updatedAt: 1,
+          projects: {
+            $map: {
+              input: '$projects',
+              as: 'p',
+              in: {
+                projectId: '$$p._id',
+                projectName: '$$p.projectName'
+              }
+            }
+          },
+          clients: {
+            $map: {
+              input: '$clients',
+              as: 'c',
+              in: {
+                clientId: '$$c._id',
+                clientName: '$$c.clientName'
+              }
+            }
+          },
+          receivablePurchases: {
+            $map: {
+              input: '$receivablePurchases',
+              as: 'rp',
+              in: {
+                _id: '$$rp._id',
+                POStatus: '$$rp.POStatus',
+                purchaseDate: '$$rp.purchaseDate',
+                amount: '$$rp.amount'
+              }
+            }
+          }
+        }
+      }
+    ]);
 
-    if (!allCostEstimates || allCostEstimates.length === 0) {
-      return res.status(404).json({ success: false, message: "No cost estimates found" });
+    // Handle empty
+    if (!allCostEstimates.length) {
+      return res
+        .status(404)
+        .json({ success: false, message: 'No cost estimates found' });
     }
 
- const costEstimatesWithDetails = allCostEstimates.map(costEstimate => {
-  const costEstimateObj = costEstimate.toObject();
-
-  return {
-    ...costEstimateObj,
-    projects: Array.isArray(costEstimate.projectId)
-      ? costEstimate.projectId.map(project => ({
-          projectId: project?._id,
-          projectName: project?.projectName
-        }))
-      : [],
-    clients: costEstimate.clientId
-      ? [{
-          clientId: costEstimate.clientId._id,
-          clientName: costEstimate.clientId.clientName
-        }]
-      : []
-  };
-});
-
-    res.status(200).json({
+    // Success
+    return res.status(200).json({
       success: true,
-      costEstimates: costEstimatesWithDetails,
+      costEstimates: allCostEstimates
     });
-
   } catch (error) {
-    console.error("Error fetching cost estimates:", error);
-    res.status(500).json({
+    console.error('Error fetching cost estimates:', error);
+    return res.status(500).json({
       success: false,
-      message: "An error occurred while fetching cost estimates",
-      error: error.message,
+      message: 'An error occurred while fetching cost estimates',
+      error: error.message
     });
   }
 };
+
 
 
 

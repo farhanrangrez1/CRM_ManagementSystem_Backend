@@ -9,11 +9,16 @@ const CostEstimatesSchema = new mongoose.Schema({
         ref: 'Projects',
         required: true,
     }],
-clientId: [{
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'ClientManagement',
-    required: true,
-}],
+    clientId: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'ClientManagement',
+        required: true,
+    }],
+    receivablePurchaseId: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'ReceivablePurchase',
+        required: true,
+    }],
 
     estimateDate: {
         type: Date,
@@ -56,10 +61,6 @@ clientId: [{
         required: true,
     },
     Notes: {
-        type: String,
-        required: true,
-    },
-    POStatus: {
         type: String,
         required: true,
     },

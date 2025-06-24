@@ -394,6 +394,7 @@ const UpdateUser = async (req, res) => {
       'state',
       'country',
       'permissions',
+      'assign',
       'accessLevel'
     ];
 

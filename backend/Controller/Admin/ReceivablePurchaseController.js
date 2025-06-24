@@ -17,11 +17,12 @@ const ReceivablePurchaseCreate = asyncHandler(async (req, res) => {
     projectsId,
     ClientId,
     CostEstimatesId,
-    Status,
     ReceivedDate,
+    POStatus,
     Amount
   } = req.body;
 
+  console.log("first", req.body);
   try {
     if (typeof projectsId === "string") {
       try {
@@ -109,7 +110,7 @@ const ReceivablePurchaseCreate = asyncHandler(async (req, res) => {
       ClientId,
       ReceivedDate,
       PONumber,
-      Status,
+      POStatus,
       Amount,
       image: imageUrls,
     });

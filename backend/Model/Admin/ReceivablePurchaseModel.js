@@ -14,7 +14,7 @@ const ReceivablePurchaseSchema = new mongoose.Schema({
         ref: 'ClientManagement',
         required: true
     }],
-    CostEstimatesId :[{
+    CostEstimatesId: [{
         type: mongoose.Schema.Types.ObjectId,
         ref: 'CostEstimates',
         required: true
@@ -24,9 +24,10 @@ const ReceivablePurchaseSchema = new mongoose.Schema({
         required: true,
         unique: true
     },
-    Status: {
+    POStatus: {
         type: String,
         required: true,
+        default: 'Pending',
     },
     ReceivedDate: {
         type: Date,
