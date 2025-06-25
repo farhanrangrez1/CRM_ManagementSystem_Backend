@@ -1,7 +1,5 @@
 const mongoose = require("mongoose");
 
-
-
 const PDFSchema = new mongoose.Schema({
     CostEstimatesId: [{
         type: mongoose.Schema.Types.ObjectId,
@@ -18,8 +16,6 @@ const PDFSchema = new mongoose.Schema({
         ref: 'ClientManagement',
         required: true,
     }],
-}, {
-    timestamps: true,
-});
+}, { timestamps: true });
 
 module.exports = mongoose.model('PDF_Estimate', PDFSchema);

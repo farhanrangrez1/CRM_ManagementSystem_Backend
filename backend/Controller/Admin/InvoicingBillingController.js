@@ -1,9 +1,9 @@
 const asyncHandler = require('express-async-handler');
+const mongoose = require("mongoose");
 const InvoicingBilling = require('../../Model/Admin/InvoicingBillingModel');
 const Projects = require("../../Model/Admin/ProjectsModel");
 const ClientManagement = require("../../Model/Admin/ClientManagementModel");
 const cloudinary = require('../../Config/cloudinary');
-const mongoose = require("mongoose");
 
 cloudinary.config({
   cloud_name: 'dkqcqrrbp',
@@ -11,10 +11,13 @@ cloudinary.config({
   api_secret: 'p12EKWICdyHWx8LcihuWYqIruWQ'
 });
 
+// 🔵 POST: Create Invoicing Billing
 const InvoicingBillingCreate = asyncHandler(async (req, res) => {
   const {
     projectsId,
     clientId,
+    CostEstimatesId,
+    ReceivablePurchaseId,
     date,
     status,
     currency,
@@ -25,117 +28,113 @@ const InvoicingBillingCreate = asyncHandler(async (req, res) => {
 
   try {
     if (!Array.isArray(projectsId) || projectsId.some(id => !mongoose.Types.ObjectId.isValid(id))) {
-      return res.status(400).json({
-        success: false,
-        message: "Invalid Project ID format. Ensure all IDs are valid."
-      });
+      return res.status(400).json({ success: false, message: "Invalid Project ID(s)" });
     }
 
-    if (!Array.isArray(clientId) || clientId.some(id => !mongoose.Types.ObjectId.isValid(id))) {
-      return res.status(400).json({
-        success: false,
-        message: "Invalid Client ID format. Ensure all IDs are valid."
-      });
+    if (!mongoose.Types.ObjectId.isValid(clientId)) {
+      return res.status(400).json({ success: false, message: "Invalid Client ID" });
+    }
+
+    if (!mongoose.Types.ObjectId.isValid(CostEstimatesId)) {
+      return res.status(400).json({ success: false, message: "Invalid CostEstimatesId" });
+    }
+
+    if (!mongoose.Types.ObjectId.isValid(ReceivablePurchaseId)) {
+      return res.status(400).json({ success: false, message: "Invalid ReceivablePurchaseId" });
     }
 
     const projects = await Projects.find({ '_id': { $in: projectsId } });
     if (projects.length !== projectsId.length) {
-      return res.status(404).json({
-        success: false,
-        message: "One or more projects not found"
-      });
+      return res.status(404).json({ success: false, message: "One or more projects not found" });
     }
 
-    const clients = await ClientManagement.find({ '_id': { $in: clientId } });
-    if (clients.length !== clientId.length) {
-      return res.status(404).json({
-        success: false,
-        message: "One or more clients not found"
-      });
+    const client = await ClientManagement.findById(clientId);
+    if (!client) {
+      return res.status(404).json({ success: false, message: "Client not found" });
     }
 
-    // Create new estimate
-    const newCostEstimate = new InvoicingBilling({
+    const newInvoice = new InvoicingBilling({
       projectId: projectsId,
       clientId,
-    date,
-    status,
-    currency,
-    document,
-    output,
-    lineItems,
+      CostEstimatesId,
+      ReceivablePurchaseId,
+      date,
+      status,
+      currency,
+      document,
+      output,
+      lineItems,
     });
 
-    await newCostEstimate.save();
+    await newInvoice.save();
 
     res.status(201).json({
       success: true,
-      message: "Cost Estimate created successfully",
-      costEstimate: newCostEstimate,
+      message: "Invoicing record created successfully",
+      invoicingBilling: newInvoice,
     });
 
   } catch (error) {
     res.status(500).json({
       success: false,
-      message: "An error occurred while creating the Cost Estimate",
+      message: "An error occurred while creating the invoice",
       error: error.message,
     });
   }
 });
+
 
 // GET All Cost Estimates with project and client info
-const AllInvoicingBilling = async (req, res) => {
+const AllInvoicingBilling = asyncHandler(async (req, res) => {
   try {
     const allInvoicingBilling = await InvoicingBilling.find()
-      .populate({
-        path: 'projectId',
-        select: '_id projectName',
-        model: 'Projects'
-      })
-      .populate({
-        path: 'clientId',
-        select: '_id clientName',
-        model: 'ClientManagement'
-      });
+      .populate({ path: 'projectId', select: '_id projectName' })
+      .populate({ path: 'clientId', select: '_id clientName' })
+      .populate({ path: 'CostEstimatesId', select: '_id estimateRefName totalCost' })
+      .populate({ path: 'ReceivablePurchaseId', select: '_id purchaseRefNo purchaseDate' });
 
-    if (!allInvoicingBilling || allInvoicingBilling.length === 0) {
-      return res.status(404).json({ success: false, message: "No cost estimates found" });
+    if (!allInvoicingBilling.length) {
+      return res.status(404).json({ success: false, message: "No invoicing records found" });
     }
 
- const InvoicingBillingWithDetails = allInvoicingBilling.map(costEstimate => {
-  const costEstimateObj = costEstimate.toObject();
+    const mapped = allInvoicingBilling.map(item => {
+      const obj = item.toObject();
 
-  return {
-    ...costEstimateObj,
-    projects: Array.isArray(costEstimate.projectId)
-      ? costEstimate.projectId.map(project => ({
-          projectId: project?._id,
-          projectName: project?.projectName
-        }))
-      : [],
-    clients: costEstimate.clientId
-      ? [{
-          clientId: costEstimate.clientId._id,
-          clientName: costEstimate.clientId.clientName
-        }]
-      : []
-  };
-});
-
-    res.status(200).json({
-      success: true,
-      InvoicingBilling: InvoicingBillingWithDetails,
+      return {
+        ...obj,
+        projects: Array.isArray(item.projectId)
+          ? item.projectId.map(p => ({ projectId: p._id, projectName: p.projectName }))
+          : [],
+        clients: item.clientId
+          ? [{ clientId: item.clientId._id, clientName: item.clientId.clientName }]
+          : [],
+        costEstimate: item.CostEstimatesId
+          ? {
+              estimateId: item.CostEstimatesId._id,
+              estimateRefName: item.CostEstimatesId.estimateRefName,
+              totalCost: item.CostEstimatesId.totalCost
+            }
+          : null,
+        receivablePurchase: item.ReceivablePurchaseId
+          ? {
+              purchaseId: item.ReceivablePurchaseId._id,
+              purchaseRefNo: item.ReceivablePurchaseId.purchaseRefNo,
+              purchaseDate: item.ReceivablePurchaseId.purchaseDate
+            }
+          : null
+      };
     });
 
+    res.status(200).json({ success: true, InvoicingBilling: mapped });
+
   } catch (error) {
-    console.error("Error fetching cost estimates:", error);
     res.status(500).json({
       success: false,
-      message: "An error occurred while fetching cost estimates",
+      message: "An error occurred while fetching invoicing records",
       error: error.message,
     });
   }
-};
+});
 
 
 

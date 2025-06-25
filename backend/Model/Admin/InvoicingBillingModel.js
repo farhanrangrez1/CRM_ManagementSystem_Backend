@@ -14,6 +14,16 @@ const InvoicingBillingSchema = new mongoose.Schema({
         ref: 'ClientManagement',
         required: true,
     },
+    CostEstimatesId: {
+        type: mongoose.Schema.Types.ObjectId,    //id client
+        ref: 'CostEstimates',
+        required: true,
+    },
+    ReceivablePurchaseId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'ReceivablePurchase',
+        required: true,
+    },
     date: {
         type: Date,
         required: true,

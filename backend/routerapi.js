@@ -26,6 +26,8 @@ routerapi.use('/api/AssignmentJob', require('./Router/Admin/AssignmentJobControl
 routerapi.use('/api/ReportsAnalytics', require('./Router/Admin/ReportsAnalyticsrRouter'));
 // Remove Assign Job
 routerapi.use('/api/Remove', require('./Router/Admin/removeAssignRouter'));
+// PDFCreate
+routerapi.use('/api/pdf', require('./Router/Admin/PDF_EstimatesRouter'));
 
 // /////Employee
 routerapi.use('/api/employee/dashboard',require('./Router/Employee/DashboardRouter'));
