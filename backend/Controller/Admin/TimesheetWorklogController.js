@@ -35,7 +35,6 @@ const TimesheetWorklogCreate = asyncHandler(async (req, res) => {
     endTime,
     taskDescription,
     status,
-    tags
   } = req.body;
 
   try {
@@ -133,7 +132,6 @@ const TimesheetWorklogCreate = asyncHandler(async (req, res) => {
       hours: durationReadable,
       taskDescription,
       status,
-      tags
     });
 
     await newTimesheetWorklog.save();
@@ -258,8 +256,7 @@ const UpdateTimesheetWorklog = async (req, res) => {
       'endTime',
       'hours',
       'taskDescription',
-      'status',
-      'tags'
+      'status'
     ];
     const updateData = {};
     allowedFields.forEach(field => {

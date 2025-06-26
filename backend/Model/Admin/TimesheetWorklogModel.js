@@ -46,10 +46,6 @@ const TimesheetWorklogSchema = new mongoose.Schema({
         required: true,
         default: 'Pending',
     },
-    tags: {
-        type: String,
-        required: true,
-    },
 }, {
     timestamps: true,
 });
