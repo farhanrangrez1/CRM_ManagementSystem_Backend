@@ -89,14 +89,13 @@ const AllInvoicingBilling = asyncHandler(async (req, res) => {
   try {
     const allInvoicingBilling = await InvoicingBilling.find()
       .populate({ path: 'projectId', select: '_id projectName' })
-      .populate({ path: 'clientId', select: '_id clientName' })
+     .populate({path: 'clientId',select: '_id clientName contactPersons.email'})
       .populate({ path: 'CostEstimatesId', select: '_id estimateRefName totalCost' })
       .populate({ path: 'ReceivablePurchaseId', select: '_id purchaseRefNo purchaseDate' });
 
     if (!allInvoicingBilling.length) {
       return res.status(404).json({ success: false, message: "No invoicing records found" });
     }
-
     const mapped = allInvoicingBilling.map(item => {
       const obj = item.toObject();
 
@@ -106,7 +105,7 @@ const AllInvoicingBilling = asyncHandler(async (req, res) => {
           ? item.projectId.map(p => ({ projectId: p._id, projectName: p.projectName }))
           : [],
         clients: item.clientId
-          ? [{ clientId: item.clientId._id, clientName: item.clientId.clientName }]
+          ? [{ clientId: item.clientId._id, clientName: item.clientId.clientName, clientEmail:item.clientId.contactPersons.email }]
           : [],
         costEstimate: item.CostEstimatesId
           ? {

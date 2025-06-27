@@ -76,24 +76,31 @@ const createProjects = asyncHandler(async (req, res) => {
 
  //GET SINGLE AllProjects
   //METHOD:GET
-  const getAllProjects = async (req, res) => {
-    try {
-      const allProjects = await Projects.find();
-  
-      const projectsWithVirtuals = allProjects.map(project => project.toObject({ virtuals: true }));
-      res.status(200).json({
-        success: true,
-        data: projectsWithVirtuals,
+const getAllProjects = async (req, res) => {
+  try {
+    const allProjects = await Projects.find()
+      .populate({
+        path: 'clientId',
+        select: 'clientName', // Only fetch the clientName field
       });
-    } catch (error) {
-      res.status(500).json({
-        success: false,
-        message: "Error fetching projects",
-        error: error.message,
-      });
-    }
-  };
-  
+
+    const projectsWithVirtuals = allProjects.map(project =>
+      project.toObject({ virtuals: true })
+    );
+
+    res.status(200).json({
+      success: true,
+      data: projectsWithVirtuals,
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: "Error fetching projects",
+      error: error.message,
+    });
+  }
+};
+
   
 
 

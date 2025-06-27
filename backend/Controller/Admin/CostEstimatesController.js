@@ -141,7 +141,9 @@ const AllCostEstimates = async (req, res) => {
               as: 'c',
               in: {
                 clientId: '$$c._id',
-                clientName: '$$c.clientName'
+                clientName: '$$c.clientName',
+                clientEmail: '$$c.contactPersons.email',
+                clientPhone: '$$c.contactPersons.phone'
               }
             }
           },
