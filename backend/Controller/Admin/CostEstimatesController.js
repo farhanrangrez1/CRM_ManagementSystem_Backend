@@ -14,7 +14,7 @@ cloudinary.config({
 });
 const costEstimatesCreate = asyncHandler(async (req, res) => {
   const {
-    projectsId,
+    projectId,
     clientId,
     estimateDate,
     validUntil,
@@ -27,7 +27,7 @@ const costEstimatesCreate = asyncHandler(async (req, res) => {
   } = req.body;
 
   try {
-    if (!Array.isArray(projectsId) || projectsId.some(id => !mongoose.Types.ObjectId.isValid(id))) {
+    if (!Array.isArray(projectId) || projectId.some(id => !mongoose.Types.ObjectId.isValid(id))) {
       return res.status(400).json({ success: false, message: "Invalid Project ID format." });
     }
 
@@ -35,8 +35,8 @@ const costEstimatesCreate = asyncHandler(async (req, res) => {
       return res.status(400).json({ success: false, message: "Invalid Client ID format." });
     }
 
-    const projects = await Projects.find({ '_id': { $in: projectsId } });
-    if (projects.length !== projectsId.length) {
+    const projects = await Projects.find({ '_id': { $in: projectId } });
+    if (projects.length !== projectId.length) {
       return res.status(404).json({ success: false, message: "One or more projects not found" });
     }
 
@@ -49,7 +49,7 @@ const costEstimatesCreate = asyncHandler(async (req, res) => {
 
     const newCostEstimate = new CostEstimates({
       estimateRef,
-      projectId: projectsId,
+      projectId: projectId,
       clientId, // already an array
       estimateDate,
       validUntil,
@@ -204,41 +204,43 @@ const deleteCostEstimate = async (req, res) => {
 //GET SINGLE ProjectsUpdate
 //METHOD:PUT
 const UpdateCostEstimate = async (req, res) => {
-  try {
     const id = req.body.id || req.params.id;
     if (!id) {
       return res.status(400).json({ message: 'Missing Cost Estimate ID' });
     }
+    const {
+    projectId,
+    clientId,
+    estimateDate,
+    validUntil,
+    currency,
+    lineItems,
+    VATRate,
+    Notes,
+    POStatus,
+    Status
+  } = req.body;
 
-    const allowedFields = [
-      'projects',
-      'estimateDate',
-      'validUntil',
-      'currency',
-      'lineItems',
-      'VATRate',
-      'Notes'
-    ];
-
-    const updateData = {};
-    allowedFields.forEach(field => {
-      if (req.body[field] !== undefined) {
-        updateData[field] = req.body[field];
-      }
-    });
-
-    if (Object.keys(updateData).length === 0) {
-      return res.status(400).json({ message: 'At least one field must be provided for update' });
-    }
-
-    console.log("Updating ID:", id);
-    const updatedCostEstimate = await CostEstimates.findByIdAndUpdate(id, updateData, { new: true });
+  try {
+    const updatedCostEstimate = await CostEstimates.findByIdAndUpdate(id, {
+      projectId,
+      clientId,
+      estimateDate,
+      validUntil,
+      currency,
+      lineItems,
+      VATRate,
+      Notes,
+      POStatus,
+      Status
+    }, { new: true });
 
     if (!updatedCostEstimate) {
       return res.status(404).json({ message: 'Cost Estimate not found' });
     }
 
     res.status(200).json(updatedCostEstimate);
+
   } catch (error) {
     console.error("Error updating cost estimate:", error);
     res.status(500).json({ message: 'Server error', error });
