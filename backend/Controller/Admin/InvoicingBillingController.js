@@ -4,6 +4,7 @@ const InvoicingBilling = require('../../Model/Admin/InvoicingBillingModel');
 const Projects = require("../../Model/Admin/ProjectsModel");
 const ClientManagement = require("../../Model/Admin/ClientManagementModel");
 const cloudinary = require('../../Config/cloudinary');
+const { generateInvoicingNo } = require('../../middlewares/generateEstimateRef');
 
 cloudinary.config({
   cloud_name: 'dkqcqrrbp',
@@ -52,8 +53,9 @@ const InvoicingBillingCreate = asyncHandler(async (req, res) => {
     if (!client) {
       return res.status(404).json({ success: false, message: "Client not found" });
     }
-
+const InvoiceNo = await generateInvoicingNo();
     const newInvoice = new InvoicingBilling({
+      InvoiceNo,
       projectId: projectsId,
       clientId,
       CostEstimatesId,

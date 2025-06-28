@@ -2,6 +2,7 @@ const CostEstimates = require('../Model/Admin/CostEstimatesModel'); // Path ko a
 const Projects = require("../Model/Admin/ProjectsModel");
 const Jobs = require('../Model/Admin/JobsModel');
 const ReceivablePurchase = require('../Model/Admin/ReceivablePurchaseModel');
+const InvoicingBilling = require('../Model/Admin/InvoicingBillingModel');
 
 const generateEstimateNo = async () => {
   const currentYear = new Date().getFullYear();
@@ -96,5 +97,30 @@ const ReceivablePurchaseNo = async () => {
   return `PO-${newNumber}`; // e.g. PO-0002, PO-0003
 };
 
-module.exports = { generateEstimateNo, generateProjectNo, generateJobsNo,ReceivablePurchaseNo };
+
+const generateInvoicingNo = async () => {
+  const lastEntry = await InvoicingBilling.findOne({
+    InvoiceNo: { $regex: /^INV-\d{4}$/ }
+  }).sort({ createdAt: -1 });
+
+  let lastNumber = 0;
+
+  if (lastEntry && lastEntry.InvoiceNo) {
+    const match = lastEntry.InvoiceNo.match(/^INV-(\d{4})$/);
+    if (match) {
+      lastNumber = parseInt(match[1], 10);
+    }
+  }
+
+  const newNumber = (lastNumber + 1).toString().padStart(4, '0');
+  return `INV-${newNumber}`;
+};
+
+module.exports = {
+  generateEstimateNo,
+  generateProjectNo,
+  generateJobsNo,
+  ReceivablePurchaseNo,
+  generateInvoicingNo
+};
 

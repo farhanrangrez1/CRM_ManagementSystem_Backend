@@ -14,6 +14,12 @@ const InvoicingBillingSchema = new mongoose.Schema({
         ref: 'ClientManagement',
         required: true,
     },
+    InvoiceNo: {
+        type: String,
+        required: true,
+        unique: true,
+    },
+    
     CostEstimatesId: {
         type: mongoose.Schema.Types.ObjectId,    //id client
         ref: 'CostEstimates',

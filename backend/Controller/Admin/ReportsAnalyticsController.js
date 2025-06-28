@@ -91,9 +91,9 @@ const ReportsAnalyticsController = asyncHandler(async (req, res) => {
   };
 
   // 4. PO Status (ReceivablePurchase)
-  const approvedPOs = await ReceivablePurchase.countDocuments({ Status: 'Approved' });
-  const pendingPOs = await ReceivablePurchase.countDocuments({ Status: 'Pending' });
-  const rejectedPOs = await ReceivablePurchase.countDocuments({ Status: 'Rejected' });
+  const approvedPOs = await ReceivablePurchase.countDocuments({ POStatus: 'Approved' });
+  const pendingPOs = await ReceivablePurchase.countDocuments({ POStatus: 'Pending' });
+  const rejectedPOs = await ReceivablePurchase.countDocuments({ POStatus: 'Rejected' });
 
   // 5. Timesheet Compliance
   const filledTimesheets = await TimesheetWorklog.distinct('employeeId', {
