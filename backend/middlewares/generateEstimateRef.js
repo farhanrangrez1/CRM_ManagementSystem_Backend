@@ -5,22 +5,22 @@ const ReceivablePurchase = require('../Model/Admin/ReceivablePurchaseModel');
 const InvoicingBilling = require('../Model/Admin/InvoicingBillingModel');
 
 const generateEstimateNo = async () => {
-  const currentYear = new Date().getFullYear();
-  // Find last estimate of this year
-  const lastEstimate = await CostEstimates.findOne({ estimateRef: { $regex: `^EST-${currentYear}-` } }).sort({ createdAt: -1 });
+  // Find last estimate with CO- prefix
+  const lastEstimate = await CostEstimates.findOne({
+    estimateRef: { $regex: /^CO-\d{4}$/ }
+  }).sort({ createdAt: -1 });
 
   let lastNumber = 0;
 
   if (lastEstimate && lastEstimate.estimateRef) {
     const parts = lastEstimate.estimateRef.split("-");
-    lastNumber = parseInt(parts[2], 10);
+    lastNumber = parseInt(parts[1], 10);
   }
 
-  const newNumber = (lastNumber + 1).toString().padStart(3, '0');
+  const newNumber = (lastNumber + 1).toString().padStart(4, '0');
 
-  return `EST-${currentYear}-${newNumber}`;
+  return `CO-${newNumber}`;
 };
-
 
 
 // const generateProjectNo = async () => {

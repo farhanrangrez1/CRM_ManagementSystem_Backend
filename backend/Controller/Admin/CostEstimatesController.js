@@ -12,45 +12,101 @@ cloudinary.config({
   api_key: '418838712271323',
   api_secret: 'p12EKWICdyHWx8LcihuWYqIruWQ'
 });
+// const costEstimatesCreate = asyncHandler(async (req, res) => {
+//   const {
+//     projectId,
+//     clientId,
+//     estimateDate,
+//     validUntil,
+//     currency,
+//     lineItems,
+//     VATRate,
+//     Notes,
+//     POStatus,
+//     Status
+//   } = req.body;
+
+//   try {
+//     // 1. Validate IDs
+//     if (!Array.isArray(projectId) || projectId.some(id => !mongoose.Types.ObjectId.isValid(id))) {
+//       return res.status(400).json({ success: false, message: "Invalid Project ID format." });
+//     }
+
+//     if (!Array.isArray(clientId) || clientId.some(id => !mongoose.Types.ObjectId.isValid(id))) {
+//       return res.status(400).json({ success: false, message: "Invalid Client ID format." });
+//     }
+
+//     const projects = await Projects.find({ '_id': { $in: projectId } });
+//     if (projects.length !== projectId.length) {
+//       return res.status(404).json({ success: false, message: "One or more projects not found" });
+//     }
+
+//     const clients = await ClientManagement.find({ '_id': { $in: clientId } });
+//     if (clients.length !== clientId.length) {
+//       return res.status(404).json({ success: false, message: "One or more clients not found" });
+//     }
+
+//     // 2. Upload Images (if any)
+//     let uploadedImages = [];
+
+//     if (req.files && req.files.length > 0) {
+//       const uploads = req.files.map(async (file) => {
+//         const result = await cloudinary.uploader.upload_stream({ resource_type: "image" }, (error, result) => {
+//           if (error) throw error;
+//           return result;
+//         });
+
+//         return new Promise((resolve, reject) => {
+//           const stream = cloudinary.uploader.upload_stream((err, result) => {
+//             if (err) reject(err);
+//             else resolve(result.secure_url);
+//           });
+//           stream.end(file.buffer);
+//         });
+//       });
+
+//       uploadedImages = await Promise.all(uploads);
+//     }
+
+//     // 3. Create estimate
+//     const estimateRef = await generateEstimateNo();
+//     const newCostEstimate = new CostEstimates({
+//       estimateRef,
+//       projectId,
+//       clientId,
+//       estimateDate,
+//       validUntil,
+//       currency,
+//       lineItems,
+//       VATRate,
+//       Notes,
+//       Status,
+//       image: uploadedImages,
+//     });
+
+//     await newCostEstimate.save();
+
+//     res.status(201).json({
+//       success: true,
+//       message: "Cost Estimate created successfully",
+//       costEstimate: newCostEstimate,
+//     });
+
+//   } catch (error) {
+//     res.status(500).json({
+//       success: false,
+//       message: "An error occurred while creating the Cost Estimate",
+//       error: error.message,
+//     });
+//   }
+// });
+
 const costEstimatesCreate = asyncHandler(async (req, res) => {
-  const {
-    projectId,
-    clientId,
-    estimateDate,
-    validUntil,
-    currency,
-    lineItems,
-    VATRate,
-    Notes,
-    POStatus,
-    Status
-  } = req.body;
-
   try {
-    if (!Array.isArray(projectId) || projectId.some(id => !mongoose.Types.ObjectId.isValid(id))) {
-      return res.status(400).json({ success: false, message: "Invalid Project ID format." });
-    }
-
-    if (!Array.isArray(clientId) || clientId.some(id => !mongoose.Types.ObjectId.isValid(id))) {
-      return res.status(400).json({ success: false, message: "Invalid Client ID format." });
-    }
-
-    const projects = await Projects.find({ '_id': { $in: projectId } });
-    if (projects.length !== projectId.length) {
-      return res.status(404).json({ success: false, message: "One or more projects not found" });
-    }
-
-    const clients = await ClientManagement.find({ '_id': { $in: clientId } });
-    if (clients.length !== clientId.length) {
-      return res.status(404).json({ success: false, message: "One or more clients not found" });
-    }
-
-    const estimateRef = await generateEstimateNo();
-
-    const newCostEstimate = new CostEstimates({
-      estimateRef,
-      projectId: projectId,
-      clientId, // already an array
+    // Parse fields from form-data
+    let {
+      projectId,
+      clientId,
       estimateDate,
       validUntil,
       currency,
@@ -59,6 +115,75 @@ const costEstimatesCreate = asyncHandler(async (req, res) => {
       Notes,
       POStatus,
       Status
+    } = req.body;
+
+    // Convert to arrays if necessary
+    projectId = Array.isArray(projectId) ? projectId : [projectId];
+    clientId = Array.isArray(clientId) ? clientId : [clientId];
+
+    // Parse lineItems JSON string
+    if (typeof lineItems === 'string') {
+      try {
+        lineItems = JSON.parse(lineItems);
+      } catch (err) {
+        return res.status(400).json({ success: false, message: "Invalid lineItems format. Must be valid JSON." });
+      }
+    }
+
+    // Validate IDs
+    if (projectId.some(id => !mongoose.Types.ObjectId.isValid(id))) {
+      return res.status(400).json({ success: false, message: "Invalid Project ID format." });
+    }
+    if (clientId.some(id => !mongoose.Types.ObjectId.isValid(id))) {
+      return res.status(400).json({ success: false, message: "Invalid Client ID format." });
+    }
+
+    // Check existence
+    const projects = await Projects.find({ _id: { $in: projectId } });
+    if (projects.length !== projectId.length) {
+      return res.status(404).json({ success: false, message: "One or more projects not found." });
+    }
+    const clients = await ClientManagement.find({ _id: { $in: clientId } });
+    if (clients.length !== clientId.length) {
+      return res.status(404).json({ success: false, message: "One or more clients not found." });
+    }
+
+  // Image upload handling (agar koi file aaye toh)
+    let imageUrls = [];
+    if (req.files && req.files.image) {
+      const files = Array.isArray(req.files.image) ? req.files.image : [req.files.image];
+      for (const file of files) {
+        try {
+          const result = await cloudinary.uploader.upload(file.tempFilePath, {
+            folder: 'user_profiles',
+            resource_type: 'image',
+          });
+          if (result.secure_url) {
+            imageUrls.push(result.secure_url);
+          }
+        } catch (uploadError) {
+          console.error("Cloudinary upload error:", uploadError);
+        }
+      }
+    }
+
+    // Generate Estimate Ref
+    const estimateRef = await generateEstimateNo();
+
+    // Create and Save Document
+    const newCostEstimate = new CostEstimates({
+      estimateRef,
+      projectId: projectId[0], // Assuming single selection
+      clientId: clientId[0],
+      estimateDate,
+      validUntil,
+      currency,
+      lineItems,
+      VATRate,
+      Notes,
+      POStatus,
+      Status,
+      image: imageUrls,
     });
 
     await newCostEstimate.save();
@@ -77,6 +202,7 @@ const costEstimatesCreate = asyncHandler(async (req, res) => {
     });
   }
 });
+
 
 
 
@@ -203,12 +329,14 @@ const deleteCostEstimate = async (req, res) => {
 
 //GET SINGLE ProjectsUpdate
 //METHOD:PUT
-const UpdateCostEstimate = async (req, res) => {
-    const id = req.body.id || req.params.id;
-    if (!id) {
-      return res.status(400).json({ message: 'Missing Cost Estimate ID' });
-    }
-    const {
+const UpdateCostEstimate = asyncHandler(async (req, res) => {
+  const id = req.body.id || req.params.id;
+
+  if (!id || !mongoose.Types.ObjectId.isValid(id)) {
+    return res.status(400).json({ success: false, message: 'Invalid or missing Cost Estimate ID' });
+  }
+
+  let {
     projectId,
     clientId,
     estimateDate,
@@ -221,31 +349,91 @@ const UpdateCostEstimate = async (req, res) => {
     Status
   } = req.body;
 
+  // Convert to arrays if necessary
+  projectId = Array.isArray(projectId) ? projectId : [projectId];
+  clientId = Array.isArray(clientId) ? clientId : [clientId];
+
+  // Parse lineItems JSON string
+  if (typeof lineItems === 'string') {
+    try {
+      lineItems = JSON.parse(lineItems);
+    } catch (err) {
+      return res.status(400).json({ success: false, message: "Invalid lineItems format. Must be valid JSON." });
+    }
+  }
+
+  // Validate IDs
+  if (projectId.some(id => !mongoose.Types.ObjectId.isValid(id))) {
+    return res.status(400).json({ success: false, message: "Invalid Project ID format." });
+  }
+  if (clientId.some(id => !mongoose.Types.ObjectId.isValid(id))) {
+    return res.status(400).json({ success: false, message: "Invalid Client ID format." });
+  }
+
+  // Check existence
+  const projects = await Projects.find({ _id: { $in: projectId } });
+  if (projects.length !== projectId.length) {
+    return res.status(404).json({ success: false, message: "One or more projects not found." });
+  }
+  const clients = await ClientManagement.find({ _id: { $in: clientId } });
+  if (clients.length !== clientId.length) {
+    return res.status(404).json({ success: false, message: "One or more clients not found." });
+  }
+
+  // Image upload handling (if image files are uploaded)
+  let imageUrls = [];
+  if (req.files && req.files.image) {
+    const files = Array.isArray(req.files.image) ? req.files.image : [req.files.image];
+    for (const file of files) {
+      try {
+        const result = await cloudinary.uploader.upload(file.tempFilePath, {
+          folder: 'user_profiles',
+          resource_type: 'image',
+        });
+        if (result.secure_url) {
+          imageUrls.push(result.secure_url);
+        }
+      } catch (uploadError) {
+        console.error("Cloudinary upload error:", uploadError);
+      }
+    }
+  }
+
   try {
-    const updatedCostEstimate = await CostEstimates.findByIdAndUpdate(id, {
-      projectId,
-      clientId,
-      estimateDate,
-      validUntil,
-      currency,
-      lineItems,
-      VATRate,
-      Notes,
-      POStatus,
-      Status
-    }, { new: true });
+    const updatedCostEstimate = await CostEstimates.findByIdAndUpdate(
+      id,
+      {
+        projectId: projectId[0], // assuming single select
+        clientId: clientId[0],
+        estimateDate,
+        validUntil,
+        currency,
+        lineItems,
+        VATRate,
+        Notes,
+        POStatus,
+        Status,
+        ...(imageUrls.length > 0 && { image: imageUrls }), // update only if new image uploaded
+      },
+      { new: true }
+    );
 
     if (!updatedCostEstimate) {
-      return res.status(404).json({ message: 'Cost Estimate not found' });
+      return res.status(404).json({ success: false, message: 'Cost Estimate not found' });
     }
 
-    res.status(200).json(updatedCostEstimate);
+    res.status(200).json({
+      success: true,
+      message: "Cost Estimate updated successfully",
+      costEstimate: updatedCostEstimate,
+    });
 
   } catch (error) {
     console.error("Error updating cost estimate:", error);
-    res.status(500).json({ message: 'Server error', error });
+    res.status(500).json({ success: false, message: 'Server error', error: error.message });
   }
-};
+});
+
 
 
 //METHOD:Single

@@ -4,22 +4,17 @@ const Projects = require("./ProjectsModel");
 const ClientManagement = require("./ClientManagementModel");
 
 const CostEstimatesSchema = new mongoose.Schema({
-    projectId: [{
+    projectId: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Projects',
         required: true,
-    }],
-    clientId: [{
+    },
+    clientId: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'ClientManagement',
         required: true,
-    }],
-    receivablePurchaseId: [{
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'ReceivablePurchase',
-        required: true,
-    }],
-
+    },
+ 
     estimateDate: {
         type: Date,
         required: true,
@@ -68,6 +63,7 @@ const CostEstimatesSchema = new mongoose.Schema({
         type: String,
         required: true,
     },
+    image: [],
 }, {
     timestamps: true,
 });
