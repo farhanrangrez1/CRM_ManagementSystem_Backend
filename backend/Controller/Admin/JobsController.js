@@ -5,6 +5,7 @@ const Assignment = require("../../Model/Admin/AssignmentJobControllerModel");
 const cloudinary = require('../../Config/cloudinary');
 const mongoose = require("mongoose")
 const { generateJobsNo } = require('../../middlewares/generateEstimateRef');
+const JobsSelect =require("../../Model/Admin/JobsSelectModel")
 
 cloudinary.config({
   cloud_name: 'dkqcqrrbp',
@@ -438,5 +439,82 @@ const SingleJob = async (req, res) => {
   }
 }
 
+// POST /api/selects  ➜ add new option values
+const addSelectValues = asyncHandler(async (req, res) => {
+  const {
+    brandName,
+    subBrand,
+    flavour,
+    packType,
+    packCode,
+    priority,
+    status,      // 🔄 Status → status
+  } = req.body;
 
-module.exports = { jobCreate, AllJob, deleteJob, UpdateJob, SingleJob, UpdateJobAssign, AllJobID, filter };
+  try {
+    
+    const addSet = {};
+
+    if (brandName) addSet.brandName = { $each: [].concat(brandName).filter(Boolean) };
+    if (subBrand)  addSet.subBrand  = { $each: [].concat(subBrand).filter(Boolean) };
+    if (flavour)   addSet.flavour   = { $each: [].concat(flavour).filter(Boolean) };
+    if (packType)  addSet.packType  = { $each: [].concat(packType).filter(Boolean) };
+    if (packCode)  addSet.packCode  = { $each: [].concat(packCode).filter(Boolean) };
+    if (priority)  addSet.priority  = { $each: [].concat(priority).filter(Boolean) };
+    if (status)    addSet.status    = { $each: [].concat(status).filter(Boolean) };
+
+    // अगर addSet में कुछ भी नहीं बचा तो 400
+    if (Object.keys(addSet).length === 0) {
+      return res.status(400).json({
+        success: false,
+        message: "No valid values provided",
+      });
+    }
+
+    const doc = await JobsSelect.findOneAndUpdate(
+      {},                       // single master doc
+      { $addToSet: addSet },
+      { upsert: true, new: true }
+    );
+
+    return res.status(201).json({
+      success: true,
+      message: "Select lists updated",
+      data: doc,
+    });
+  } catch (err) {
+    return res.status(500).json({
+      success: false,
+      message: "Failed to update select lists",
+      error: err.message,
+    });
+  }
+});
+
+// GET API to fetch the select values
+const getSelectValues = asyncHandler(async (req, res) => {
+  try {
+    // Assuming there's only one master document
+    const doc = await JobsSelect.findOne({});
+
+    if (!doc) {
+      return res.status(404).json({
+        success: false,
+        message: "No select values found",
+      });
+    }
+
+    return res.status(200).json({
+      success: true,
+      message: "Select values fetched successfully",
+      data: doc,
+    });
+  } catch (err) {
+    return res.status(500).json({
+      success: false,
+      message: "Failed to fetch select values",
+      error: err.message,
+    });
+  }
+});
+module.exports = { jobCreate, AllJob, deleteJob, UpdateJob, SingleJob, UpdateJobAssign, AllJobID, filter,addSelectValues ,getSelectValues};
