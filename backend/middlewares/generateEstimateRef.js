@@ -7,7 +7,7 @@ const InvoicingBilling = require('../Model/Admin/InvoicingBillingModel');
 const generateEstimateNo = async () => {
   // Find last estimate with CO- prefix
   const lastEstimate = await CostEstimates.findOne({
-    estimateRef: { $regex: /^CO-\d{4}$/ }
+    estimateRef: { $regex: /^CE-\d{4}$/ }
   }).sort({ createdAt: -1 });
 
   let lastNumber = 0;
@@ -16,12 +16,10 @@ const generateEstimateNo = async () => {
     const parts = lastEstimate.estimateRef.split("-");
     lastNumber = parseInt(parts[1], 10);
   }
-
   const newNumber = (lastNumber + 1).toString().padStart(4, '0');
 
-  return `CO-${newNumber}`;
+  return `CE-${newNumber}`;
 };
-
 
 // const generateProjectNo = async () => {
 //   const currentYear = new Date().getFullYear();
