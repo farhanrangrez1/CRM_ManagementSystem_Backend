@@ -167,11 +167,7 @@ const userSchema = new mongoose.Schema({
     //     reportGeneration: { type: Boolean, default: false },
     //     systemSettings: { type: Boolean, default: false }
     // },
-    // accessLevel: {
-    //     fullAccess: { type: Boolean, default: false },
-    //     limitedAccess: { type: Boolean, default: false },
-    //     viewOnly: { type: Boolean, default: false }
-    // },
+   
     isAdmin: {
         type: Boolean,
         default: false

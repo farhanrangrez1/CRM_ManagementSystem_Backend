@@ -2,14 +2,40 @@ const express = require('express');
 
 const routerapi = express.Router()
 
-// Projects
+// CRM 
+//////////////
+// User
+routerapi.use('/api/user', require('./Router/userRouter'));
+// Role
+routerapi.use('/api/user', require('./Router/Admin/RoleRouter'));
+
+
+
+
+//Plan
+routerapi.use('/api/admin/plans', require('./Router/Admin/PlanRouter'));
+//Coupons
+routerapi.use('/api/coupons', require('./Router/Admin/CouponsRouter'));
+//Domain
+routerapi.use('/api/domain', require('./Router/Admin/DomainRouter'));
+
+
+
+
+
+
+
+
+
+
+
+// ////////////
 routerapi.use('/api/projects', require('./Router/Admin/ProjectsRouter'));
 // Jobs
 routerapi.use('/api/jobs', require('./Router/Admin/JobsRouter'));
 // Client
 routerapi.use('/api/client', require('./Router/Admin/ClientManagementRouter'));
-// User
-routerapi.use('/api/user', require('./Router/userRouter'));
+
 // CostEstimates
 routerapi.use('/api/costEstimates', require('./Router/Admin/CostEstimatesRouter'));
 // TimeLogs
@@ -29,15 +55,5 @@ routerapi.use('/api/Remove', require('./Router/Admin/removeAssignRouter'));
 // PDFCreate
 routerapi.use('/api/pdf', require('./Router/Admin/PDF_EstimatesRouter'));
 
-// /////Employee
-routerapi.use('/api/employee/dashboard', require('./Router/Employee/DashboardRouter'));
 
-//Plan
-routerapi.use('/api/admin/plans', require('./Router/Admin/PlanRouter'));
-//Coupons
-routerapi.use('/api/coupons', require('./Router/Admin/CouponsRouter'));
-
-//Domain
-
-routerapi.use('/api/domain', require('./Router/Admin/DomainRouter'));
 module.exports = routerapi
