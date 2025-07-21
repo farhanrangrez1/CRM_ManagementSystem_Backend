@@ -22,10 +22,10 @@ const createUser = async (req, res) => {
   try {
     const {
       firstName, lastName, email, password, passwordConfirm,
-      phone, role, state, country, permissions, accessLevel, assign
+      phone, role, state, country, permissions, accessLevel, assign, performance
     } = req.body;
 
-    const requiredFields = { firstName, lastName, email, password, passwordConfirm, phone, role, state, country, assign };
+    const requiredFields = { firstName, lastName, email, password, passwordConfirm, phone, role, state, country, assign, performance };
     for (const [key, value] of Object.entries(requiredFields)) {
       if (!value || value.toString().trim() === '') {
         return res.status(400).json({ status: false, message: `${key} is required` });
@@ -68,6 +68,7 @@ const createUser = async (req, res) => {
       profileImage,
       permissions: parsedPermissions,
       accessLevel: parsedAccessLevel,
+      performance
     });
 
     const token = genretToken(newUser._id);

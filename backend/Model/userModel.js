@@ -139,7 +139,7 @@ const userSchema = new mongoose.Schema({
     role: {
         type: String,
         required: [true, 'Role is required'],
-        default: "user",
+        
     },
     state: {
         type: String,
@@ -149,25 +149,29 @@ const userSchema = new mongoose.Schema({
         type: String,
         required: true,
     },
-    assign:{
-        type:String,
-        required:true
+    assign: {
+        type: String,
+        required: true
     },
-    permissions: {
-        dashboardAccess: { type: Boolean, default: false },
-        clientManagement: { type: Boolean, default: false },
-        projectManagement: { type: Boolean, default: false },
-        designTools: { type: Boolean, default: false },
-        financialManagement: { type: Boolean, default: false },
-        userManagement: { type: Boolean, default: false },
-        reportGeneration: { type: Boolean, default: false },
-        systemSettings: { type: Boolean, default: false }
+    performance: {
+        type: String,
+        required: true
     },
-    accessLevel: {
-        fullAccess: { type: Boolean, default: false },
-        limitedAccess: { type: Boolean, default: false },
-        viewOnly: { type: Boolean, default: false }
-    },
+    // permissions: {
+    //     dashboardAccess: { type: Boolean, default: false },
+    //     clientManagement: { type: Boolean, default: false },
+    //     projectManagement: { type: Boolean, default: false },
+    //     designTools: { type: Boolean, default: false },
+    //     financialManagement: { type: Boolean, default: false },
+    //     userManagement: { type: Boolean, default: false },
+    //     reportGeneration: { type: Boolean, default: false },
+    //     systemSettings: { type: Boolean, default: false }
+    // },
+    // accessLevel: {
+    //     fullAccess: { type: Boolean, default: false },
+    //     limitedAccess: { type: Boolean, default: false },
+    //     viewOnly: { type: Boolean, default: false }
+    // },
     isAdmin: {
         type: Boolean,
         default: false
