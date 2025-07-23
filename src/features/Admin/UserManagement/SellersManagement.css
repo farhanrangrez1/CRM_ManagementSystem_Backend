@@ -1,0 +1,160 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+body, .sellers-management-root {
+  font-family: 'Inter', sans-serif;
+  background: #f7f8fa;
+  color: #181a1e;
+}
+
+.sellers-management-summary-card {
+  min-height: 110px;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(44,62,80,0.04);
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 20px 18px;
+  background: #fff;
+}
+
+.sellers-management-summary-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 28px;
+}
+
+.sellers-management-summary-label {
+  font-size: 14px;
+  color: #7b809a;
+  font-weight: 500;
+}
+
+.sellers-management-summary-value {
+  font-size: 28px;
+  font-weight: 700;
+  color: #181a1e;
+}
+
+.sellers-management-filter-bar {
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(44,62,80,0.04);
+  padding: 24px 18px 18px 18px;
+  margin-bottom: 18px;
+}
+
+.sellers-management-search-input {
+  border-radius: 8px;
+  border: 1px solid #e5e7eb;
+  padding: 8px 12px 8px 36px;
+  font-size: 15px;
+  width: 100%;
+  background: #f7f8fa;
+}
+
+.sellers-management-search-icon {
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #b0b3c7;
+  font-size: 18px;
+}
+
+.sellers-management-reset-btn {
+  border-radius: 8px;
+  border: 1px solid #e5e7eb;
+  background: #fff;
+  color: #7b809a;
+  font-weight: 500;
+  padding: 8px 16px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  transition: background 0.2s;
+}
+.sellers-management-reset-btn:hover {
+  background: #f3f4f6;
+}
+
+.sellers-management-table-card {
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(44,62,80,0.04);
+  padding: 18px 0 0 0;
+}
+
+.sellers-management-table th, .sellers-management-table td {
+  font-size: 15px;
+  font-weight: 500;
+  padding: 14px 12px;
+  vertical-align: middle;
+}
+.sellers-management-table th {
+  background: #f7f8fa;
+  color: #7b809a;
+  font-weight: 600;
+}
+.sellers-management-table .avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: #6366f1;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  font-size: 18px;
+  margin-right: 10px;
+}
+.sellers-management-table .badge {
+  font-size: 13px;
+  font-weight: 500;
+  padding: 4px 12px;
+  border-radius: 12px;
+}
+.sellers-management-table .bg-success {
+  background: #e6fbe6 !important;
+  color: #22c55e !important;
+}
+.sellers-management-table .bg-danger {
+  background: #ffe6e6 !important;
+  color: #ef4444 !important;
+}
+.sellers-management-table .bg-primary {
+  background: #e6f0ff !important;
+  color: #5b6bfa !important;
+  border: 1px solid #5b6bfa22 !important;
+}
+.sellers-management-table .icon-btn {
+  background: none;
+  border: none;
+  color: #b0b3c7;
+  font-size: 18px;
+  padding: 4px;
+  margin-right: 2px;
+  cursor: pointer;
+  transition: color 0.2s;
+}
+.sellers-management-table .icon-btn.view:hover {
+  color: #5b6bfa;
+}
+.sellers-management-table .icon-btn.edit:hover {
+  color: #22c55e;
+}
+.sellers-management-table .icon-btn.delete:hover {
+  color: #ef4444;
+}
+
+.sellers-management-table .fw-semibold {
+  font-weight: 600 !important;
+}
+
+.sellers-management-table .text-muted {
+  color: #7b809a !important;
+} 

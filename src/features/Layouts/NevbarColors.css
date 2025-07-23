@@ -1,0 +1,195 @@
+:root {
+  --nevbar-bg: #27374D; /* Dark Navy Blue Background */
+  --nevbar-btn-active: #526D82; /* Muted Blue - Active Button */
+  --nevbar-btn-hover: #9DB2BF; /* Soft Blue Hover */
+  --nevbar-btn-text: #ffffff; /* White Text for Contrast */
+  --nevbar-btn-active-text: #ffffff; /* White Active Text */
+  --nevbar-btn-inactive-text: #DDE6ED; /* Light Blue for Inactive */
+  --nevbar-btn-active-border: #9DB2BF; /* Soft Blue Border */
+  --nevbar-divider: #3E4E61; /* Deep Slate Blue Divider */
+}
+
+
+.nevbar-main {
+  background: var(--nevbar-bg) !important;
+  color: var(--nevbar-btn-text) !important;
+}
+
+.nevbar-main .navbar-brand {
+  color: #fff !important;
+}
+
+.nevbar-main .nav-link {
+  color: var(--nevbar-btn-text) !important;
+  transition: background 0.2s, color 0.2s;
+}
+
+.nevbar-main .nav-link.active,
+.nevbar-main .nav-link[aria-current="page"] {
+  background: var(--nevbar-btn-active) !important;
+  color: var(--nevbar-btn-active-text) !important;
+  border-left: 4px solid var(--nevbar-btn-active-border);
+}
+
+.nevbar-main .nav-link:hover {
+  background: var(--nevbar-btn-hover) !important;
+  color: #fff !important;
+}
+
+.nevbar-main .nav-item .active-indicator {
+  background: var(--nevbar-btn-active-border) !important;
+}
+
+.nevbar-main .dropdown-item {
+  color: var(--nevbar-btn-text) !important;
+}
+
+.nevbar-main .dropdown-item:hover {
+  background: var(--nevbar-btn-hover) !important;
+  color: #fff !important;
+} 
+
+.nevbar-font {
+  font-family: 'Inter', sans-serif;
+  min-height: 72px;
+}
+
+.nevbar-brand-bold {
+  font-size: 20px;
+  color: #222;
+}
+
+.nevbar-icon-btn {
+  color:white;
+  font-size: 22px;
+}
+
+.nevbar-notification-btn {
+  color:white;
+  font-size: 24px;
+}
+
+.nevbar-badge-danger {
+  font-size: 11px;
+  padding: 2px 4px;
+  top: 2px;
+}
+
+.nevbar-badge-primary {
+  font-size: 11px;
+  padding: 2px 4px;
+  top: 2px;
+}
+
+.message-dropdown {
+  position: absolute;
+  top: 160%;
+  right: 0;
+  min-width: 270px;
+  background: #fff;
+  color: #222;
+  border-radius: 10px;
+  box-shadow: 0 4px 24px rgba(0,0,0,0.10);
+  z-index: 1000;
+  padding: 0;
+  border: 1px solid #e5e7eb;
+}
+
+.message-dropdown-header {
+  padding: 12px 16px;
+  border-bottom: 1px solid #f1f5f9;
+  font-weight: 600;
+  font-size: 15px;
+  color: #222;
+}
+
+.message-dropdown-item {
+  padding: 12px 16px;
+  border-bottom: 1px solid #f1f5f9;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.message-dropdown-profile {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.message-dropdown-title {
+  font-weight: 500;
+  font-size: 14px;
+  color: #222;
+}
+
+.message-dropdown-time {
+  font-size: 12px;
+  color: #64748b;
+}
+
+.message-dropdown-footer {
+  padding: 12px 16px;
+  text-align: center;
+  color: #64748b;
+  font-size: 13px;
+}
+
+.nevbar-user-info {
+  text-align: right;
+}
+
+.nevbar-user-name {
+  font-weight: 600;
+  font-size: 15px;
+  color: #222;
+}
+
+.nevbar-user-role {
+  font-size: 13px;
+}
+
+.nevbar-user-avatar {
+  width: 36px;
+  height: 36px;
+  background: #6366f1;
+  color: #fff;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  font-size: 18px;
+  margin-left: 6px;
+} 
+
+.user-dropdown {
+  min-width: 180px;
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.15);
+  z-index: 1000;
+  padding: 8px 0;
+  font-size: 15px;
+}
+.user-dropdown-item {
+  color: #222;
+  padding: 10px 20px;
+  cursor: pointer;
+  transition: background 0.15s;
+  font-weight: 500;
+}
+.user-dropdown-item:hover {
+  background: #f5f5f5;
+}
+.user-dropdown-logout {
+  color: #e53935;
+  border-top: 1px solid #eee;
+  margin-top: 4px;
+} 
+
+
+#w{
+  color: white;
+}

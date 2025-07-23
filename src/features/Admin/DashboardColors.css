@@ -1,0 +1,75 @@
+/* Dashboard Card Styles */
+.dashboard-card {
+    background: #fff;
+    border-radius: 18px;
+
+    padding: 24px 20px;
+    margin-bottom: 18px;
+    transition: box-shadow 0.2s, transform 0.2s;
+    border: none;
+}
+
+.dashboard-card:hover {
+    box-shadow: 0 8px 32px 0 rgba(60, 60, 120, 0.18);
+    transform: translateY(-2px) scale(1.01);
+}
+
+.dashboard-section-title {
+    letter-spacing: 0.5px;
+    color: #1e293b;
+}
+
+.quick-action-btn {
+    border: none;
+    border-radius: 12px;
+    padding: 18px 12px;
+    font-weight: 600;
+    font-size: 1rem;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
+    transition: box-shadow 0.2s, background 0.2s, transform 0.2s;
+    box-shadow: 0 2px 8px rgba(99, 102, 241, 0.08);
+    cursor: pointer;
+    margin-bottom: 8px;
+}
+
+.quick-action-btn:hover {
+
+    transform: translateY(-2px) scale(1.03);
+}
+
+.card-value {
+    font-size: 2.1rem;
+    font-weight: 800;
+    color: #6366f1;
+}
+
+.card-title {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: #1e293b;
+}
+
+.card-desc {
+    font-size: 0.98rem;
+    color: #64748b;
+}
+
+@media (max-width: 900px) {
+    .dashboard-card {
+        padding: 16px 8px;
+    }
+}
+
+@media (max-width: 600px) {
+    .dashboard-card {
+        padding: 10px 2px;
+        border-radius: 10px;
+    }
+
+    .dashboard-section-title {
+        font-size: 1.1rem;
+    }
+}

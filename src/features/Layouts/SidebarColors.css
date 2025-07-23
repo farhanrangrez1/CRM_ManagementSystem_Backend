@@ -1,0 +1,103 @@
+:root {
+  --sidebar-bg: #27374D;
+  --sidebar-btn-active: #526D82;
+  --sidebar-btn-hover: #9DB2BF;
+  --sidebar-btn-text: #ffffff;
+  --sidebar-btn-active-text: #ffffff;
+  --sidebar-btn-inactive-text: #DDE6ED;
+  --sidebar-divider: #3E4E61;
+}
+
+
+/* Sidebar main container */
+.sidebar-main {
+  background: var(--sidebar-bg) !important;
+  color: var(--sidebar-btn-text) !important;
+  min-width: 72px;
+  box-shadow: 0 2px 16px 0 rgba(39, 55, 77, 0.04);
+}
+
+/* Sidebar nav list */
+.sidebar-main .nav {
+  gap: 12px;
+}
+
+/* Sidebar nav item */
+.sidebar-main .nav-item {
+  margin-bottom: 12px;
+}
+
+/* Sidebar nav link */
+.sidebar-main .nav-link {
+  color: var(--sidebar-btn-text) !important;
+  transition: background 0.2s, color 0.2s, box-shadow 0.2s;
+  border-radius: 12px !important;
+  padding: 8px 18px !important;
+  font-size: 15px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.sidebar-main .nav-link.active,
+.sidebar-main .nav-link[aria-current="page"] {
+  background: var(--sidebar-btn-active) !important;
+  color: var(--sidebar-btn-active-text) !important;
+  box-shadow: 0 2px 12px 0 rgba(79, 70, 229, 0.10);
+  border-left: 4px solid var(--sidebar-btn-active-border);
+}
+
+.sidebar-main .nav-link:hover {
+  background: var(--sidebar-btn-hover) !important;
+  color: #fff !important;
+  border-radius: 12px !important;
+}
+
+.sidebar-main .nav-item .active-indicator {
+  background: var(--sidebar-btn-active-border) !important;
+  border-radius: 4px 0 0 4px;
+}
+
+/* Submenu links */
+.sidebar-main .nav-link.submenu {
+  font-size: 14px;
+  padding: 6px 12px !important;
+  border-radius: 8px !important;
+  margin-bottom: 8px;
+}
+
+.sidebar-main .nav-link.submenu.active {
+  background: var(--sidebar-btn-active) !important;
+  color: var(--sidebar-btn-active-text) !important;
+}
+
+.sidebar-main .nav-link.submenu:hover {
+  background: var(--sidebar-btn-hover) !important;
+  color: #fff !important;
+}
+
+.sidebar-main .sidebar-user-profile {
+  border-top: 1px solid var(--sidebar-divider);
+  padding-top: 18px;
+  margin-top: 18px;
+}
+
+.sidebar-main .dropdown-item {
+  color: var(--sidebar-btn-text) !important;
+  font-size: 14px;
+  border-radius: 6px;
+  padding: 6px 12px;
+}
+
+.sidebar-main .dropdown-item:hover {
+  background: var(--sidebar-btn-hover) !important;
+  color: #fff !important;
+}
+
+/* Icon alignment */
+.sidebar-main .nav-link>span>span {
+  min-width: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}

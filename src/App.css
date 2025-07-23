@@ -1,0 +1,320 @@
+/* Dashboard color palette */
+:root {
+  --dashboard-bg: #f1f8eb;              /* Light background */
+  --dashboard-card-bg: #ffffff;         /* Clean white cards */
+  --dashboard-card-hover: #F3FFF0;      /* Subtle green tint on hover */
+  --dashboard-text: #324d69;            /* Dark green for text */
+  --dashboard-title: #1c2a38;           /* Deeper green for headings */
+  --dashboard-border:#DEE2E6;       /* Soft green borders */
+  --dashboard-badge: #44576A;
+--dashboard-badge: #324d69;
+
+}
+#btn {
+  background-color: #324d69;
+  color: white;
+}
+
+#border{
+  border: 1px solid #324d69;
+}
+
+.dashboard-main {
+  background: var(--dashboard-bg) !important;
+  color: var(--dashboard-text) !important;
+  min-height: 100vh;
+}
+
+.dashboard-section-title {
+  color: var(--dashboard-title) !important;
+}
+
+.dashboard-card {
+  background: var(--dashboard-card-bg) !important;
+  color: var(--dashboard-text) !important;
+  border: 1px solid var(--dashboard-border) !important;
+  border-radius: 16px;
+  box-shadow: 0 2px 8px 0 rgba(165,56,96,0.10);
+  padding: 24px;
+  transition: background 0.2s, color 0.2s;
+}
+
+/* .dashboard-card:hover {
+  background: var(--dashboard-card-hover) !important;
+  color: #fff !important;
+} */
+
+.card-title, .card-value, .card-desc {
+  color: var(--dashboard-text) !important;
+}
+
+.breadcrumb-item.active {
+  color: var(--dashboard-title) !important;
+}
+
+.breadcrumb-item a {
+  color: var(--dashboard-badge) !important;
+}
+
+.badge {
+  background: var(--dashboard-badge) !important;
+  color: var(--dashboard-bg) !important;
+}
+
+.quick-action-btn {
+  background: var(--dashboard-card-hover) !important;
+  border-radius: 12px;
+  padding: 16px 12px;
+  border: none;
+  font-weight: 600;
+  transition: background 0.2s, color 0.2s;
+}
+
+.quick-action-btn:hover {
+  background: var(--dashboard-bg) !important;
+  color: var(--dashboard-badge) !important;
+} 
+
+
+
+
+/* /////Buyers */
+
+
+.buyers-title {
+  letter-spacing: -0.5px;
+  font-size: 28px;
+}
+
+.buyers-subtitle {
+  font-weight: 500;
+  font-size: 16px;
+}
+
+.buyers-summary-card {
+  border-radius: 18px;
+  background: #fff;
+  border: 1.5px solid var(--dashboard-border);
+}
+
+.buyers-summary-icon {
+  width: 54px;
+  height: 54px;
+  border-radius: 50%;
+  box-shadow: 0 2px 8px rgba(91,107,250,0.07);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.buyers-summary-value {
+  font-weight: 700;
+  font-size: 22px;
+}
+
+.buyers-summary-label {
+  font-weight: 500;
+}
+
+.buyers-search-label {
+  font-size: 16px;
+  letter-spacing: -0.2px;
+}
+
+.buyers-search-group {
+  border-radius: 10px;
+  background: #f4f6fb;
+  border: 1px solid #e0e3ea;
+  box-shadow: 0 1px 4px rgba(99,102,241,0.04);
+}
+
+.buyers-search-icon {
+  border-radius: 10px 0 0 10px;
+  display: flex;
+  align-items: center;
+  height: 44px;
+  font-size: 20px;
+  color: #6366f1;
+}
+
+.buyers-search-input {
+  border-radius: 0 10px 10px 0;
+  background: transparent;
+  height: 44px;
+  font-size: 15px;
+  box-shadow: none;
+}
+
+.buyers-search-count {
+  margin-left: 2px;
+}
+
+.buyers-select {
+  background: #f4f6fb;
+}
+
+.buyers-reset-btn {
+  border-radius: 8px;
+  font-weight: 500;
+  height: 40px;
+}
+
+.buyers-table-title {
+  font-weight: 600;
+  font-size: 18px;
+}
+
+.buyers-table-count {
+  color: #6c757d;
+  font-size: 14px;
+}
+
+.buyers-table {
+  min-width: 900px;
+}
+
+.buyers-avatar {
+  background: #6366f1;
+  color: #fff;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  font-weight: 700;
+  font-size: 18px;
+  box-shadow: 0 2px 8px rgba(99,102,241,0.10);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.buyers-user-name {
+  font-weight: 600;
+  font-size: 16px;
+}
+
+.buyers-action-btn {
+  border-radius: 6px;
+  padding: 6px 10px;
+}
+
+/* Table row hover effect */
+.table-row-hover:hover {
+  background: #f4f6fb !important;
+}
+
+
+
+/* Allplans */
+.plans-page-container {
+  background: #f7f8fa;
+  min-height: 100vh;
+  padding: 32px;
+}
+
+.plans-summary {
+  display: flex;
+  gap: 24px;
+  margin-bottom: 32px;
+}
+
+.plans-topbar {
+  display: flex;
+  align-items: center;
+  margin-bottom: 24px;
+  flex-wrap: wrap;
+}
+
+.plans-topbar input {
+  flex: 1;
+  padding: 10px 16px;
+  border-radius: 8px;
+  border: 1px solid #e5e7eb;
+  font-size: 16px;
+  margin-right: 16px;
+  min-width: 220px;
+}
+
+.plans-topbar .plans-status-group {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.plans-topbar select,
+.plans-topbar button {
+  padding: 8px 12px;
+  border-radius: 8px;
+  border: 1px solid #e5e7eb;
+  font-size: 16px;
+  background: #f7f8fa;
+  font-weight: 500;
+}
+
+.plans-topbar .create-btn {
+  margin-left: auto;
+  background: #2563eb;
+  color: #fff;
+  border-radius: 8px;
+  padding: 10px 24px;
+  font-weight: 600;
+  font-size: 16px;
+  border: none;
+}
+
+.plans-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+}
+
+@media (max-width: 1100px) {
+  .plans-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 700px) {
+  .plans-grid {
+    grid-template-columns: 1fr;
+  }
+  .plans-summary {
+    flex-direction: column;
+    gap: 16px;
+  }
+  .plans-topbar {
+    flex-direction: column;
+    gap: 12px;
+  }
+  .plans-topbar input {
+    margin-right: 0;
+    margin-bottom: 8px;
+  }
+  .plans-topbar .create-btn {
+    margin-left: 0;
+    margin-top: 8px;
+    width: 100%;
+  }
+}
+
+/* Card styles (optional, for extra polish) */
+.plans-card {
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px #0001;
+  padding: 24px;
+  position: relative;
+  min-height: 260px;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,272 @@
+/* Reportanalatics.css - Responsive styles for Reports & Analytics page */
+
+.analytics-container {
+    background: #f7f8fa;
+    min-height: 100vh;
+    padding: 32px;
+  }
+  
+  .analytics-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    margin-bottom: 18px;
+  }
+  
+  .analytics-title {
+    font-weight: 700;
+    font-size: 22px;
+  }
+  
+  .analytics-desc {
+    color: #6c757d;
+    margin-bottom: 24px;
+  }
+  
+  .analytics-tabs {
+    display: flex;
+    gap: 16px;
+    margin-bottom: 24px;
+    flex-wrap: wrap;
+  }
+  
+  .analytics-tab {
+    background: #fff;
+    border-radius: 10px;
+    padding: 14px 28px;
+    font-weight: 500;
+    font-size: 16px;
+    color: #222;
+    border: 2px solid transparent;
+    cursor: pointer;
+  }
+  .analytics-tab.active {
+    border-color: #2563eb;
+    background: #eef2ff;
+  }
+  
+  .analytics-summary {
+    display: flex;
+    gap: 24px;
+    margin-bottom: 32px;
+    flex-wrap: wrap;
+  }
+  
+  .analytics-summary-card {
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px #0001;
+    padding: 24px;
+    flex: 1;
+    min-width: 220px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  
+  .analytics-summary-card .trend {
+    margin-left: 8px;
+    font-size: 15px;
+    font-weight: 600;
+  }
+  
+  .analytics-main {
+    display: flex;
+    gap: 24px;
+    flex-wrap: wrap;
+  }
+  
+  .analytics-trend, .analytics-domains {
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px #0001;
+    padding: 24px;
+    flex: 1;
+    min-width: 320px;
+  }
+  
+  .analytics-trend-list {
+    margin-top: 18px;
+  }
+  .analytics-trend-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 0;
+    border-bottom: 1px solid #f0f0f0;
+    font-size: 16px;
+  }
+  .analytics-trend-row:last-child {
+    border-bottom: none;
+  }
+  
+  .analytics-domains-list {
+    margin-top: 18px;
+  }
+  .analytics-domain-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    padding: 10px 0;
+    border-bottom: 1px solid #f0f0f0;
+    font-size: 16px;
+  }
+  .analytics-domain-row:last-child {
+    border-bottom: none;
+  }
+  .analytics-domain-info {
+    display: flex;
+    flex-direction: column;
+  }
+  .analytics-domain-type {
+    color: #6c757d;
+    font-size: 14px;
+  }
+  
+  @media (max-width: 1100px) {
+    .analytics-main {
+      flex-direction: column;
+      gap: 18px;
+    }
+  }
+  
+  @media (max-width: 700px) {
+    .analytics-container {
+      padding: 12px;
+    }
+    .analytics-header {
+      flex-direction: column;
+      gap: 10px;
+      align-items: flex-start;
+    }
+    .analytics-summary {
+      flex-direction: column;
+      gap: 16px;
+    }
+    .analytics-main {
+      flex-direction: column;
+      gap: 16px;
+    }
+    .analytics-trend, .analytics-domains {
+      min-width: 0;
+      width: 100%;
+    }
+  }
+  /* Add-on styles for User Growth Analytics and Detailed Analytics sections */
+  
+  .analytics-growth-section {
+    background: #fff;
+    border-radius: 14px;
+    box-shadow: 0 2px 8px #0001;
+    padding: 28px 24px;
+    margin-bottom: 32px;
+  }
+  .analytics-growth-title {
+    font-weight: 600;
+    font-size: 20px;
+    margin-bottom: 18px;
+  }
+  .analytics-growth-cards {
+    display: flex;
+    gap: 24px;
+    flex-wrap: wrap;
+  }
+  .analytics-growth-card {
+    background: #f7f8fa;
+    border-radius: 10px;
+    padding: 18px 24px;
+    flex: 1;
+    min-width: 220px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .analytics-growth-card .growth-new {
+    color: #22c55e;
+    font-weight: 600;
+    font-size: 16px;
+    margin-bottom: 4px;
+  }
+  .analytics-growth-card .growth-total {
+    font-weight: 700;
+    font-size: 20px;
+  }
+  
+  .analytics-details-section {
+    background: #fff;
+    border-radius: 14px;
+    box-shadow: 0 2px 8px #0001;
+    padding: 28px 24px;
+    margin-bottom: 32px;
+  }
+  .analytics-details-title {
+    font-weight: 600;
+    font-size: 20px;
+    margin-bottom: 18px;
+  }
+  .analytics-details-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 10px;
+  }
+  .analytics-details-actions {
+    display: flex;
+    gap: 12px;
+  }
+  .analytics-details-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 16px;
+  }
+  .analytics-details-table th, .analytics-details-table td {
+    padding: 12px 8px;
+    text-align: left;
+  }
+  .analytics-details-table th {
+    color: #6c757d;
+    font-weight: 500;
+    background: #f7f8fa;
+  }
+  .analytics-details-table tr:not(:last-child) {
+    border-bottom: 1px solid #f0f0f0;
+  }
+  .analytics-details-table td .details-desc {
+    color: #6c757d;
+    font-size: 14px;
+  }
+  .analytics-details-table td .details-change {
+    font-weight: 600;
+    border-radius: 6px;
+    padding: 2px 8px;
+    font-size: 15px;
+  }
+  .analytics-details-table td .details-change.positive {
+    color: #22c55e;
+    background: #e6f9f0;
+  }
+  .analytics-details-table td .details-change.negative {
+    color: #ef4444;
+    background: #fdeaea;
+  }
+  .analytics-details-table td .details-trend {
+    font-size: 18px;
+    margin-left: 8px;
+  }
+  
+  @media (max-width: 900px) {
+    .analytics-growth-cards {
+      flex-direction: column;
+      gap: 16px;
+    }
+  }
+  @media (max-width: 700px) {
+    .analytics-growth-section, .analytics-details-section {
+      padding: 12px 8px;
+    }
+    .analytics-details-table th, .analytics-details-table td {
+      padding: 8px 4px;
+      font-size: 15px;
+    }
+  }

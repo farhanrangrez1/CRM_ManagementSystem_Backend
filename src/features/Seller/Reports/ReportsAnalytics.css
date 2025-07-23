@@ -1,0 +1,109 @@
+.reports-analytics-dashboard {
+  background-color: #f8f9fc;
+  min-height: 100vh;
+  padding: 1.5rem;
+}
+
+.dashboard-title {
+  font-size: 1.75rem;
+  font-weight: 600;
+  color: #5a5c69;
+  margin-bottom: 0.25rem;
+}
+
+.dashboard-subtitle {
+  color: #858796;
+  font-size: 0.875rem;
+  margin-bottom: 1.5rem;
+}
+
+.sales-report-header {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.sales-report-label {
+  font-weight: 600;
+  color: #5a5c69;
+  margin-right: 0.5rem;
+}
+
+.time-period-container {
+  display: inline-block;
+  border: 1px solid #d1d3e2;
+  border-radius: 0.35rem;
+  overflow: hidden;
+}
+
+.time-period-btn {
+  background: white;
+  border: none;
+  color: #5a5c69;
+  padding: 0.25rem 0.75rem;
+  font-size: 0.875rem;
+  transition: all 0.2s;
+}
+
+.time-period-btn.active {
+  background-color: #4e73df;
+  color: white;
+}
+
+.export-btn {
+  font-size: 0.875rem;
+  padding: 0.25rem 0.75rem;
+}
+
+.metric-card {
+  background: white;
+  border-radius: 0.35rem;
+  border-left: 0.25rem solid #4e73df;
+  box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.15);
+}
+
+.metric-value {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #5a5c69;
+  margin-bottom: 0.25rem;
+}
+
+.metric-label {
+  color: #858796;
+  font-size: 0.875rem;
+  margin-bottom: 0;
+  text-transform: uppercase;
+  font-weight: 600;
+}
+
+.metric-change {
+  color: #1cc88a;
+  font-size: 0.875rem;
+  font-weight: 600;
+}
+
+.chart-card {
+  background: white;
+  border-radius: 0.35rem;
+  box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.15);
+}
+
+.chart-title {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #5a5c69;
+}
+
+.product-label {
+  font-size: 0.875rem;
+  color: #5a5c69;
+}
+
+@media (max-width: 768px) {
+  .sales-report-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.75rem;
+  }
+}

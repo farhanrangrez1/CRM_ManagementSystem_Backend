@@ -1,0 +1,171 @@
+:root {
+  --primary-bg: #3A0519;
+  --secondary-bg: #670D2F;
+  --accent: #A53860;
+  --highlight: #EF88AD;
+  --text-main: #EF88AD;
+  --text-dark: #fff;
+  --sidebar-btn-bg: var(--secondary-bg);
+  --sidebar-btn-hover: var(--accent);
+  --sidebar-btn-active: var(--highlight);
+  --sidebar-btn-text: var(--highlight);
+  --sidebar-btn-active-text: var(--primary-bg);
+}
+
+body, .container-fluid {
+  font-family: 'Inter', Arial, sans-serif;
+  background: var(--primary-bg);
+  color: var(--text-main);
+}
+
+h3, .fw-bold {
+  font-weight: 700 !important;
+}
+
+.card {
+  border-radius: 16px !important;
+  box-shadow: 0 2px 12px 0 rgba(16,30,54,0.04) !important;
+  border: none !important;
+}
+
+.card .card-body {
+  padding: 1.25rem 1.5rem;
+}
+
+.table {
+  background: #fff;
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.table th, .table td {
+  vertical-align: middle;
+  font-size: 15px;
+  padding: 0.85rem 0.75rem;
+}
+
+.table thead th {
+  background: #f7f8fa;
+  font-weight: 600;
+  color: #7a869a;
+  border-bottom: 1px solid #e6e8ec;
+}
+
+.table tbody tr {
+  border-bottom: 1px solid #f0f1f3;
+}
+
+.table tbody tr:last-child {
+  border-bottom: none;
+}
+
+.badge {
+  font-size: 13px;
+  border-radius: 8px;
+  padding: 0.35em 0.8em;
+  font-weight: 500;
+}
+
+.badge.bg-primary.bg-opacity-10 {
+  background: #e6f0ff !important;
+  color: #2563eb !important;
+  border: 1px solid #b6d4fe !important;
+}
+
+.badge.bg-success {
+  background: #e6fbe6 !important;
+  color: #22c55e !important;
+}
+
+.badge.bg-danger {
+  background: #ffe6e6 !important;
+  color: #ef4444 !important;
+}
+
+.avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  font-size: 18px;
+  background: #6366f1;
+  color: #fff;
+  margin-right: 10px;
+}
+
+.icon-btn {
+  background: none;
+  border: none;
+  padding: 0;
+  margin: 0 4px;
+  cursor: pointer;
+  font-size: 18px;
+  transition: color 0.2s;
+}
+
+.icon-btn.view { color: #6366f1; }
+.icon-btn.edit { color: #22c55e; }
+.icon-btn.delete { color: #ef4444; }
+
+.filter-icon {
+  color: #7a869a;
+  font-size: 18px;
+  margin-right: 8px;
+}
+
+.reset-icon {
+  color: #7a869a;
+  font-size: 18px;
+  margin-right: 6px;
+}
+
+/* THEME OVERRIDES */
+.bg-white, .bg-light, .card, .dashboard-card, .rounded-3, .rounded-4, .rounded-top-4, .rounded-bottom-4 {
+  background: var(--secondary-bg) !important;
+  color: var(--highlight) !important;
+}
+
+.text-muted, .text-secondary, .text-dark, .fw-bold, .fw-semibold, .dashboard-card .card-title, .dashboard-card .card-value, .dashboard-card .card-desc {
+  color: var(--highlight) !important;
+}
+
+.btn, .btn-primary, .btn-light, .btn-outline-primary {
+  background: var(--accent) !important;
+  color: var(--text-dark) !important;
+  border: 1.5px solid var(--highlight) !important;
+}
+.btn:hover, .btn-primary:hover, .btn-light:hover, .btn-outline-primary:hover {
+  background: var(--highlight) !important;
+  color: var(--primary-bg) !important;
+  border: 1.5px solid var(--accent) !important;
+}
+
+.badge, .badge.bg-primary, .badge.bg-success, .badge.bg-danger {
+  background: var(--accent) !important;
+  color: var(--text-dark) !important;
+  border: 1px solid var(--highlight) !important;
+}
+
+input.form-control, select.form-select {
+  background: var(--primary-bg) !important;
+  color: var(--highlight) !important;
+  border: 1.5px solid var(--accent) !important;
+}
+input.form-control:focus, select.form-select:focus {
+  border-color: var(--highlight) !important;
+  box-shadow: 0 0 0 2px var(--accent) !important;
+}
+
+::-webkit-input-placeholder { color: var(--highlight) !important; }
+::-moz-placeholder { color: var(--highlight) !important; }
+:-ms-input-placeholder { color: var(--highlight) !important; }
+::placeholder { color: var(--highlight) !important; }
+
+@media (max-width: 768px) {
+  .card .card-body { padding: 1rem; }
+  .table th, .table td { font-size: 14px; padding: 0.6rem 0.5rem; }
+  .avatar { width: 32px; height: 32px; font-size: 15px; }
+} 
