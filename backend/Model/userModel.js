@@ -138,8 +138,8 @@ const userSchema = new mongoose.Schema({
     },
     role: {
         type: String,
-        required: [true, 'Role is required'],
-        
+        enum: ['buyer', 'seller'],
+        required: true
     },
     state: {
         type: String,
@@ -167,7 +167,7 @@ const userSchema = new mongoose.Schema({
     //     reportGeneration: { type: Boolean, default: false },
     //     systemSettings: { type: Boolean, default: false }
     // },
-   
+
     isAdmin: {
         type: Boolean,
         default: false
@@ -181,6 +181,11 @@ const userSchema = new mongoose.Schema({
     resetTokenExpiry: Date,
     passwordResetToken: String,
     passwordResetExpires: Date,
+    lastLogin: {
+        type: Date,
+        default: null,
+    },
+
     createdAt: {
         type: Date,
         default: Date.now

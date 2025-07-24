@@ -1,0 +1,262 @@
+{
+	"info": {
+		"_postman_id": "413563c3-ae13-43b7-a065-91a45d7e853b",
+		"name": "CrmManagementSystem",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "39014276",
+		"_collection_link": "https://kids-care.postman.co/workspace/Kids-care-Workspace~6935aa8f-a709-493c-8d82-9756a4d9600b/collection/39014276-413563c3-ae13-43b7-a065-91a45d7e853b?action=share&source=collection_link&creator=39014276"
+	},
+	"item": [
+		{
+			"name": "Users",
+			"item": [
+				{
+					"name": "userSignup",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "firstName",
+									"value": "LM",
+									"type": "text"
+								},
+								{
+									"key": "lastName",
+									"value": "1",
+									"type": "text"
+								},
+								{
+									"key": "email",
+									"value": "lm@gmail.com",
+									"type": "text"
+								},
+								{
+									"key": "phone",
+									"value": "8739332789",
+									"type": "text"
+								},
+								{
+									"key": "password",
+									"value": "123",
+									"type": "text"
+								},
+								{
+									"key": "passwordConfirm",
+									"value": "123",
+									"type": "text"
+								},
+								{
+									"key": "role",
+									"value": "buyer",
+									"type": "text"
+								},
+								{
+									"key": "state",
+									"value": "California",
+									"type": "text"
+								},
+								{
+									"key": "country",
+									"value": "California",
+									"type": "text"
+								},
+								{
+									"key": "permissions",
+									"value": "{\"dashboardAccess\":true} ",
+									"type": "text"
+								},
+								{
+									"key": "accessLevel",
+									"value": "{\"fullAccess\":true}",
+									"type": "text"
+								},
+								{
+									"key": "assign",
+									"value": "Production",
+									"type": "text"
+								},
+								{
+									"key": "image",
+									"type": "file",
+									"src": "postman-cloud:///1f06600e-852a-4990-bf34-8b1c68424602"
+								},
+								{
+									"key": "performance",
+									"value": "35 Orders",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "https://2lkmvcf8-8000.inc1.devtunnels.ms/api/user",
+							"protocol": "https",
+							"host": [
+								"2lkmvcf8-8000",
+								"inc1",
+								"devtunnels",
+								"ms"
+							],
+							"path": [
+								"api",
+								"user"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "userLogin",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "\"createdAt\": \"2025-07-21T07:07:42.245Z\",\r\n        \"updatedAt\": \"2025-07-21T07:07:42.246Z\",",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://2lkmvcf8-8000.inc1.devtunnels.ms/api/user/login",
+							"protocol": "https",
+							"host": [
+								"2lkmvcf8-8000",
+								"inc1",
+								"devtunnels",
+								"ms"
+							],
+							"path": [
+								"api",
+								"user",
+								"login"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Plans",
+			"item": [
+				{
+					"name": "add-plan",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"name\": \"Enterprise Plan\",\r\n  \"price\": 2999,\r\n  \"type\": \"Monthly\",\r\n  \"features\": \"Everything Included, Dedicated Manager, Custom Development, SLA Support\",\r\n  \"subscribers\": 67,\r\n  \"revenue\": 200933,\r\n  \"status\": \"Active\"\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://2lkmvcf8-8000.inc1.devtunnels.ms/api/admin/plans",
+							"protocol": "https",
+							"host": [
+								"2lkmvcf8-8000",
+								"inc1",
+								"devtunnels",
+								"ms"
+							],
+							"path": [
+								"api",
+								"admin",
+								"plans"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getAll-plan",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://2lkmvcf8-8000.inc1.devtunnels.ms/api/admin/plans",
+							"protocol": "https",
+							"host": [
+								"2lkmvcf8-8000",
+								"inc1",
+								"devtunnels",
+								"ms"
+							],
+							"path": [
+								"api",
+								"admin",
+								"plans"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "delete-plan",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "https://2lkmvcf8-8000.inc1.devtunnels.ms/api/admin/plans/687ded36cdf8727df31240e2",
+							"protocol": "https",
+							"host": [
+								"2lkmvcf8-8000",
+								"inc1",
+								"devtunnels",
+								"ms"
+							],
+							"path": [
+								"api",
+								"admin",
+								"plans",
+								"687ded36cdf8727df31240e2"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "update-plan",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"name\": \"Premium Growth Plan\"\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://2lkmvcf8-8000.inc1.devtunnels.ms/api/admin/plans/687ded28cdf8727df31240e0",
+							"protocol": "https",
+							"host": [
+								"2lkmvcf8-8000",
+								"inc1",
+								"devtunnels",
+								"ms"
+							],
+							"path": [
+								"api",
+								"admin",
+								"plans",
+								"687ded28cdf8727df31240e0"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}

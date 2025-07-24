@@ -1,8 +1,7 @@
-const express=require('express');
-const { ReportsAnalyticsController } = require('../../Controller/Admin/ReportsAnalyticsController');
+const express = require("express");
+const router = express.Router();
+const { getAnalyticsReport } = require("../../Controller/Admin/ReportsAnalyticsController");
 
-const router = express.Router()
+router.get("/report", getAnalyticsReport);
 
-router.get('/',ReportsAnalyticsController)
-
- module.exports = router 
+module.exports = router;

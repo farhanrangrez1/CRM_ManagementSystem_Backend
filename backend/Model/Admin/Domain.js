@@ -11,6 +11,8 @@ const domainSchema = new mongoose.Schema({
     expiryDate: { type: Date, required: true },
     revenue: { type: Number, default: 0 },
     visitsPerMonth: { type: String }, // Optional: "89.2K visits/month"
+    isSold: { type: Boolean, default: false },
+    soldAt: { type: Date }
 }, { timestamps: true });
 
 module.exports = mongoose.model("Domain", domainSchema);

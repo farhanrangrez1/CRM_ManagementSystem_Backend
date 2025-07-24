@@ -8,7 +8,7 @@ exports.createPlan = async (req, res) => {
             name,
             price,
             type,
-            features: features.split(',').map(f => f.trim()), // split by comma
+            features: features.split(',').map(f => f.trim()), 
             subscribers,
             revenue,
             status

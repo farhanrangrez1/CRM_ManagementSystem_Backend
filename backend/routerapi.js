@@ -18,8 +18,30 @@ routerapi.use('/api/admin/plans', require('./Router/Admin/PlanRouter'));
 routerapi.use('/api/coupons', require('./Router/Admin/CouponsRouter'));
 //Domain
 routerapi.use('/api/domain', require('./Router/Admin/DomainRouter'));
+// PaymentLogs
+routerapi.use('/api/paymentLogs', require('./Router/Admin/PaymentLogsRouter'));
 
 
+
+
+
+//Seller
+
+//Leads
+routerapi.use('/api/leads', require('./Router/Seller/LeadsRoutes'));
+//Customers
+routerapi.use('/api/customers', require('./Router/Seller/CustomersRoutes'));
+//Products
+routerapi.use('/api/products', require('./Router/Seller/ProductsRoutes'));
+
+
+
+
+
+//buyer
+
+// Dashboard
+routerapi.use('/api/inquiries', require('./Router/Buyer/DashboardRouter'));
 
 
 

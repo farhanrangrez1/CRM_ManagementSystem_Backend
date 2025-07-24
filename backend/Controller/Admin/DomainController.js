@@ -42,12 +42,14 @@ exports.getAllDomains = async (req, res) => {
 };
 
 
+
 exports.getDomainSummary = async (req, res) => {
     try {
         const totalDomains = await Domain.countDocuments();
         const activeDomains = await Domain.countDocuments({ status: "Active" });
         const pendingDomains = await Domain.countDocuments({ status: "Pending" });
         const expiredDomains = await Domain.countDocuments({ status: "Expired" });
+        const domainSales = await Domain.countDocuments({ isSold: true }); // ✅ Yeh line add kari hai
 
         const domains = await Domain.find();
         const totalRevenue = domains.reduce((sum, d) => sum + (d.revenue || 0), 0);
@@ -58,6 +60,7 @@ exports.getDomainSummary = async (req, res) => {
             pendingDomains,
             expiredDomains,
             totalRevenue,
+            domainSales, // ✅ Yeh line bhi response me add kari
         });
     } catch (err) {
         res.status(500).json({ error: err.message });

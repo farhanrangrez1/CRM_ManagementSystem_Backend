@@ -101,9 +101,12 @@ const loginUser = async (req, res) => {
       return res.status(401).json({ status: false, message: 'Invalid email or password' });
     }
 
+    // ✅ Update lastLogin time
+    user.lastLogin = new Date();
+    await user.save();
+
     const token = await genretToken(user._id);
-    console.log(token)
-    const encodeTokens = await encodeToken(token)
+    const encodeTokens = await encodeToken(token);
     user.password = undefined;
 
     res.status(200).json({
@@ -117,6 +120,7 @@ const loginUser = async (req, res) => {
     res.status(500).json({ status: 'error', message: err.message });
   }
 };
+
 
 // ✅ Email Function
 const sendEmail = async (options) => {
@@ -472,8 +476,28 @@ const SingleUser = async (req, res) => {
     const SingleUser = await User.findById(req.params.id);
     res.status(200).json(SingleUser)
   } catch (error) {
-    res.status(404).json({ msg: "Can t Find Cost Estimate" })
+    res.status(404).json({ msg: "Can't Find User" })
   }
 }
 
-module.exports = { createUser, loginUser, forgotPassword, resetPassword, getAllUsers, deleteUser, UpdateUser, SingleUser }
+// GET /api/users/summary
+const getUserSummary = async (req, res) => {
+  try {
+    const totalUsers = await User.countDocuments();
+    const activeUsers = await User.countDocuments({ isActive: true });
+    const buyers = await User.countDocuments({ role: 'buyer' });
+    const sellers = await User.countDocuments({ role: 'seller' });
+
+    res.json({
+      totalUsers,
+      activeUsers,
+      buyers,
+      sellers
+    });
+  } catch (err) {
+    res.status(500).json({ message: 'Error fetching user stats', error: err.message });
+  }
+};
+
+
+module.exports = { createUser, loginUser, forgotPassword, resetPassword, getAllUsers, deleteUser, UpdateUser, SingleUser, getUserSummary }
