@@ -488,14 +488,21 @@ const getUserSummary = async (req, res) => {
     const buyers = await User.countDocuments({ role: 'buyer' });
     const sellers = await User.countDocuments({ role: 'seller' });
 
-    res.json({
-      totalUsers,
-      activeUsers,
-      buyers,
-      sellers
+    res.status(200).json({
+      msg: "Success",
+      data: {
+        totalUsers,
+        activeUsers,
+        buyers,
+        sellers
+      }
     });
+
   } catch (err) {
-    res.status(500).json({ message: 'Error fetching user stats', error: err.message });
+    res.status(500).json({
+      message: 'Error fetching user stats',
+      error: err.message
+    });
   }
 };
 

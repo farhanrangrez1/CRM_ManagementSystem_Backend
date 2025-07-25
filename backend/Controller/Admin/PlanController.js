@@ -8,7 +8,7 @@ exports.createPlan = async (req, res) => {
             name,
             price,
             type,
-            features: features.split(',').map(f => f.trim()), 
+            features: features.split(',').map(f => f.trim()),
             subscribers,
             revenue,
             status
@@ -63,6 +63,40 @@ exports.deletePlan = async (req, res) => {
         res.json({ message: "Plan deleted successfully" });
     } catch (error) {
         res.status(500).json({ error: error.message });
+    }
+};
+
+
+
+
+exports.getDashboardSummary = async (req, res) => {
+    try {
+        const totalPlans = await Plan.countDocuments();
+        const activePlans = await Plan.countDocuments({ status: "Active" });
+
+        const totalSubscribers = await Plan.countDocuments();
+
+        const revenueAgg = await Plan.aggregate([
+            {
+                $group: {
+                    _id: null,
+                    total: { $sum: "$revenue" } // ✅ Correct field
+                }
+            }
+        ]);
+        const totalRevenue = revenueAgg[0]?.total || 0;
+
+        res.status(200).json({
+            msg: 'Success',
+            totalPlans,
+            activePlans,
+            totalSubscribers,
+            totalRevenue
+        });
+
+    } catch (error) {
+        console.error('Summary API Error:', error);
+        res.status(500).json({ msg: 'Server Error', error: error.message });
     }
 };
 

@@ -5,10 +5,12 @@ const routerapi = express.Router()
 // CRM 
 //////////////
 // User
-routerapi.use('/api/user', require('./Router/userRouter'));
-// Role
-routerapi.use('/api/user', require('./Router/Admin/RoleRouter'));
+routerapi.use('/api/user', require('./Router/userRouter')); // user-related routes
+routerapi.use('/api/role', require('./Router/Admin/RoleRouter')); // role-specific routes
 
+
+//Dashboard
+routerapi.use('/api/dashboard', require('./Router/Admin/DashboardRouter'));
 
 
 

@@ -4,12 +4,14 @@ const {
     createPlan,
     getAllPlans,
     updatePlan,
-    deletePlan
+    deletePlan,
+    getDashboardSummary
 } = require('../../Controller/Admin/PlanController');
 
 router.post('/', createPlan);
 router.get('/', getAllPlans);
 router.put('/:id', updatePlan);
 router.delete('/:id', deletePlan);
+router.get('/summary', getDashboardSummary);
 
 module.exports = router;
